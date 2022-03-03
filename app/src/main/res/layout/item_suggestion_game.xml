@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="3dp"
+    android:background="@drawable/suggestion_background_gray"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <ImageView android:id="@+id/btn_cancel"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_width="36dp"
+        android:layout_height="36dp"
+        android:gravity="center"
+        android:layout_gravity="center"
+        android:paddingBottom="16dp"
+        android:paddingStart="16dp"
+        android:src="@drawable/ic_baseline_close_24_black"/>
+
+
+    <TextView android:id="@+id/tv_title"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/btn_cancel"
+        android:textSize="@dimen/text_size_2"
+        android:textStyle="bold"
+        android:textColor="@drawable/text_color"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"/>
+
+
+    <ImageView android:id="@+id/iv_vs2"
+        android:layout_width="60dp"
+        android:layout_height="80dp"
+        android:src="@drawable/vs_orange"
+        app:layout_constraintTop_toBottomOf="@id/tv_title"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+    <ImageView android:id="@+id/iv_vs"
+        android:layout_width="58dp"
+        android:layout_height="78dp"
+        android:src="@drawable/vs_gray_dark"
+        app:layout_constraintTop_toBottomOf="@id/tv_title"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+    <ImageView android:id="@+id/iv_icon1"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toBottomOf="@id/iv_vs"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_gravity="center"
+        android:padding="4dp"
+        android:src="@drawable/ic_round_pest_control_rodent_24" />
+
+
+    <TextView android:id="@+id/tv_nickName1"
+        app:layout_constraintTop_toTopOf="@id/iv_icon1"
+        app:layout_constraintStart_toEndOf="@id/iv_icon1"
+        app:layout_constraintEnd_toEndOf="@id/iv_vs"
+        android:paddingStart="@dimen/profile_text_padding"
+        android:text="משה גלזמן"
+        android:textSize="@dimen/text_size_2"
+        android:gravity="start|top"
+        android:layout_width="0dp"
+        android:textColor="@drawable/text_color"
+        android:layout_height="wrap_content"/>
+
+    <TextView android:id="@+id/tv_description1"
+        app:layout_constraintBottom_toBottomOf="@id/iv_icon1"
+        app:layout_constraintStart_toEndOf="@id/iv_icon1"
+        app:layout_constraintEnd_toEndOf="@id/iv_vs"
+        android:paddingStart="@dimen/profile_text_padding"
+        android:text="משה גלזמן"
+        android:textSize="@dimen/text_size_1"
+        android:layout_width="0dp"
+        android:gravity="start|bottom"
+        android:textColor="@drawable/text_color"
+        android:layout_height="wrap_content"/>
+
+    <ImageView android:id="@+id/iv_icon2"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="@id/iv_vs"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_gravity="center"
+        android:padding="4dp"
+        android:src="@drawable/ic_round_pest_control_rodent_24" />
+
+
+    <TextView android:id="@+id/tv_description2"
+        app:layout_constraintBottom_toBottomOf="@id/iv_icon2"
+        app:layout_constraintStart_toStartOf="@id/iv_vs"
+        app:layout_constraintEnd_toStartOf="@id/iv_icon2"
+        android:paddingStart="@dimen/profile_text_padding"
+        android:text="משה גלזמן"
+        android:textSize="@dimen/text_size_1"
+        android:layout_width="0dp"
+        android:gravity="end|bottom"
+        android:textColor="@drawable/text_color"
+        android:layout_height="wrap_content"/>
+
+    <TextView android:id="@+id/tv_nickName2"
+        app:layout_constraintTop_toTopOf="@id/iv_icon2"
+        app:layout_constraintStart_toStartOf="@id/iv_vs"
+        app:layout_constraintEnd_toStartOf="@id/iv_icon2"
+        android:paddingStart="@dimen/profile_text_padding"
+        android:text="משה גלזמן"
+        android:textSize="@dimen/text_size_2"
+        android:gravity="end|top"
+        android:layout_width="0dp"
+        android:textColor="@drawable/text_color"
+        android:layout_height="wrap_content"/>
+
+
+    <TextView android:id="@+id/btn_accept"
+        app:layout_constraintEnd_toEndOf="@id/iv_icon2"
+        app:layout_constraintBottom_toBottomOf="@id/iv_icon2"
+        android:layout_width="42dp"
+        android:layout_height="42dp"
+        android:gravity="center"
+        android:textColor="@drawable/text_color_white"
+        android:text="@string/accept"
+        android:layout_gravity="center"
+        android:layout_margin="4dp"
+        android:padding="4dp"
+        android:background="@drawable/button_gray_light"/>
+
+    <ProgressBar android:id="@+id/pb_wait"
+        app:layout_constraintEnd_toEndOf="@id/iv_icon2"
+        app:layout_constraintBottom_toBottomOf="@id/iv_icon2"
+        android:layout_width="42dp"
+        android:layout_height="42dp"
+        android:layout_margin="4dp"
+        android:background="@drawable/avatars_freebie_svg_0"
+        android:padding="10dp"/>
+
+
+    <TextView android:id="@+id/tv_search"
+        app:layout_constraintBottom_toBottomOf="@id/pb_wait"
+        app:layout_constraintEnd_toEndOf="@id/pb_wait"
+        app:layout_constraintStart_toStartOf="@id/pb_wait"
+        android:paddingStart="1dp"
+      android:gravity="center"
+        android:text="@string/search"
+        android:textStyle="bold"
+        android:textSize="8dp"
+        android:layout_marginBottom="0dp"
+        android:layout_width="wrap_content"
+        android:textColor="@drawable/text_color"
+        android:layout_height="wrap_content"/>
+
+    <TextView
+        android:id="@+id/btn_start"
+        android:layout_width="wrap_content"
+        android:layout_height="32dp"
+        android:layout_gravity="center"
+        android:layout_margin="3dp"
+        android:layout_marginTop="4dp"
+        android:background="@drawable/button_gray_light"
+        android:gravity="center"
+        android:padding="4dp"
+        android:text="@string/start_game"
+        android:textColor="@color/text_color_white"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

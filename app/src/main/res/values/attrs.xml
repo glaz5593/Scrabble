@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="DragLinearLayout">
+        <attr name="scrollSensitiveHeight" format="dimension" />
+        <attr name="scrollSensitiveWidth" format="dimension" />
+        <attr name="placeholderView" format="reference" />
+    </declare-styleable>
+
+    <style name="MyButton" parent="android:Widget.TextView">
+        <item name="android:background">@drawable/button_gray_dark</item>
+        <item name="android:textColor">@drawable/text_color_white</item>
+        <item name="android:textSize">@dimen/text_size_2</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:paddingEnd">@dimen/button_padding_side</item>
+        <item name="android:paddingStart">@dimen/button_padding_side</item>
+        <item name="android:paddingTop">@dimen/button_padding_up_bottom</item>
+        <item name="android:paddingBottom">@dimen/button_padding_up_bottom</item>
+           <item name="android:gravity">center_vertical|center_horizontal</item>
+    </style>
+</resources>

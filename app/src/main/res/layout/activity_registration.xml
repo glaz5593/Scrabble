@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:id="@+id/cl_main"
+    tools:context=".ui.activities.RegistrationActivity">
+
+    <LinearLayout android:id="@+id/ll_main"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="10dp"
+        android:background="@drawable/layout_background"
+        android:layout_marginTop="20dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:textStyle="bold"
+            android:text="@string/title_activity_registration"
+            android:padding="2dp"
+            android:textColor="@color/gray_dark"
+            android:layout_marginBottom="@dimen/login_field_margin"
+            android:layout_height="wrap_content"/>
+
+
+
+        <ImageView android:id="@+id/iv_icon"
+            android:onClick="onAvatarClick"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:layout_gravity="center"
+            android:padding="1dp"
+            android:src="@drawable/avatars_freebie_svg_0" />
+
+        <TextView android:id="@+id/tv_status"
+            android:layout_width="match_parent"
+            android:gravity="center"
+            android:textSize="@dimen/item_avatar_text"
+            android:padding="8dp"
+            android:onClick="onStatusClick"
+            android:textStyle="bold"
+            android:text="סטטוס (כרגע)"
+            android:layout_height="wrap_content"/>
+
+        <EditText android:id="@+id/et_nickName"
+            android:layout_width="@dimen/login_field_width"
+            android:drawableLeft="@drawable/ic_baseline_add_reaction_24"
+            android:hint="@string/user_nickname"
+            android:inputType="text"
+            android:padding="@dimen/login_field_padding"
+            android:layout_height="@dimen/login_field_height"
+            android:layout_margin="@dimen/login_field_margin" />
+
+
+        <EditText android:id="@+id/et_userName"
+            android:layout_width="@dimen/login_field_width"
+            android:drawableLeft="@drawable/ic_round_account_circle_24"
+            android:hint="@string/user_name"
+            android:inputType="text"
+            android:padding="@dimen/login_field_padding"
+            android:layout_height="@dimen/login_field_height"
+            android:layout_margin="@dimen/login_field_margin" />
+
+        <EditText android:id="@+id/et_password"
+            android:layout_width="@dimen/login_field_width"
+            android:layout_height="@dimen/login_field_height"
+            android:inputType="numberSigned"
+            android:padding="@dimen/login_field_padding"
+            android:hint="@string/password"
+            android:drawableLeft="@drawable/ic_baseline_offline_pin_24"
+            android:layout_margin="@dimen/login_field_margin" />
+
+        <RadioGroup
+            android:layout_width="match_parent"
+            android:orientation="horizontal"
+            android:layout_height="@dimen/login_field_height">
+
+            <RadioButton
+                android:id="@+id/rb_male"
+                android:layout_width="match_parent"
+                android:layout_weight="1"
+                android:layout_margin="@dimen/login_field_margin"
+                android:layout_height="match_parent"
+                android:background="@drawable/field_border"
+                android:drawableEnd="@drawable/male_icon"
+                android:buttonTint="@color/gray_dark"
+                android:text="@string/male" />
+
+            <RadioButton
+                android:id="@+id/rb_female"
+                android:layout_weight="1"
+                android:layout_width="match_parent"
+                android:layout_margin="@dimen/login_field_margin"
+                android:drawableEnd="@drawable/female_icon"
+                android:layout_height="match_parent"
+                android:background="@drawable/field_border"
+                android:buttonTint="@color/gray_dark"
+                android:text="@string/female" />
+        </RadioGroup>
+
+        <TextView
+            android:layout_marginTop="@dimen/login_field_height"
+            android:layout_width="wrap_content"
+            android:layout_gravity="center"
+            android:paddingEnd="@dimen/button_padding_side"
+            android:paddingStart="@dimen/button_padding_side"
+            android:paddingTop="@dimen/button_padding_up_bottom"
+            android:paddingBottom="@dimen/button_padding_up_bottom"
+            android:onClick="onRegistrationClick"
+            android:textColor="@color/text_color_white"
+            android:text="@string/registration"
+            android:background="@drawable/button_gray_dark"
+            android:layout_height="wrap_content"/>
+    </LinearLayout>
+
+    <TextView
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_width="match_parent"
+        android:gravity="center"
+        android:onClick="onBackClick"
+        android:textColor="@drawable/text_color"
+        android:textStyle="bold"
+        android:padding="@dimen/login_field_padding"
+        android:text="@string/backToLogin"
+        android:layout_height="wrap_content"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

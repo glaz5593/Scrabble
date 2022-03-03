@@ -1,0 +1,171 @@
+<resources>
+    <string name="app_name">סקראבל</string>
+    <string name="title_activity_login">התחברות למערכת</string>
+    <string name="prompt_email">Email</string>
+    <string name="prompt_password">Password</string>
+    <string name="action_sign_in">Sign in or register</string>
+    <string name="action_sign_in_short">Sign in</string>
+    <string name="welcome">"Welcome !"</string>
+    <string name="invalid_username">Not a valid username</string>
+    <string name="invalid_password">Password must be >5 characters</string>
+    <string name="login_failed">"Login failed"</string>
+    <string name="login_userName">user name</string>
+    <string name="go_to_registration">עדיין לא נרשמתי</string>
+    <string name="backToLogin">חזרה למסך לוגין</string>
+    <string name="login">כניסה</string>
+    <string name="registration">רישום</string>
+    <string name="title_activity_registration">רישום למערכת</string>
+    <string name="user_nickname">כינוי</string>
+    <string name="user_name">שם משתמש</string>
+    <string name="password">סיסמא</string>
+    <string name="title_dialog_avatar">תמונת פרופיל</string>
+    <string name="user_name_required">נא להזין שם משתמש</string>
+    <string name="user_name_incorrect">שם משתמש לא קיים</string>
+    <string name="password_incorrect">סיסמא לא נכונה</string>
+    <string name="password_required">נא להזין סיסמא</string>
+    <string name="nickName_required">נא להזין כינוי</string>
+    <string name="status_required">נא להזין סטטוס ראשוני</string>
+    <string name="gender_required">נא לבחור מין</string>
+    <string name="profile_required">נא לבחור פרופיל</string>
+    <string name="close">הבנתי</string>
+    <string name="male">זכר</string>
+    <string name="female">נקבה</string>
+    <string name="games_count">משחקים</string>
+    <string name="games_count_win">נצחונות</string>
+    <string name="games_count_lose">הפסדים</string>
+    <string name="history">הסטוריה</string>
+    <string name="users">משתמשים</string>
+    <string name="about">אודות</string>
+    <string name="profile">פרופיל</string>
+    <string name="connectedFrom">מחובר מ</string>
+    <string name="search">מחפש...</string>
+    <string name="accept">שחק</string>
+    <string name="start_game">התחל משחק</string>
+    <string name="new_suggestion">הצעה חדשה</string>
+    <string name="wait_for_start">ממתינים לתחילת המשחק</string>
+    <string name="new_your_suggestion">הצעה חדשה שלך</string>
+    <string name="has_suggestion_male">מישהו מסכים לשחק איתך</string>
+    <string name="has_suggestion_female">מישהי מסכימה לשחק איתך</string>
+    <string name="no_user_found">משתמש לא נמצא</string>
+    <string name="active_game">משחק פעיל</string>
+    <string name="canceled_game">משחק מבוטל</string>
+
+    <string-array name="avatars_female">
+        <item>"שחרחרה"</item>
+        <item>"אמיצה"</item>
+        <item>"חכמה"</item>
+        <item>"קשוחה"</item>
+        <item>"עיוורת"</item>
+        <item>"קפדנית"</item>
+        <item>"גאונה"</item>
+        <item>"מתולתלת"</item>
+        <item>"מנומסת"</item>
+        <item>"אסופית"</item>
+        <item>"משקפופרית"</item>
+        <item>"ילדותית"</item>
+        <item>"אכזרית"</item>
+        <item>"מאופקת"</item>
+        <item>"קרואלה"</item>
+        <item>"קצוצה"</item>
+        <item>"ביישנית"</item>
+        <item>"מפוזרת"</item>
+        <item>"קולית"</item>
+        <item>"מזוקנת"</item>
+        <item>"חנונית"</item>
+        <item>"גאונה"</item>
+        <item>"מתוקתקת"</item>
+        <item>"מסטולית"</item>
+        <item>"מתחכמת"</item>
+        <item>"מרושלת"</item>
+        <item>"מבולבלת"</item>
+        <item>"מסודרת"</item>
+        <item>"עיוורת"</item>
+        <item>"פרופסורית"</item>
+        <item>"גאונה"</item>
+        <item>"מתולתלת"</item>
+        <item>"רופאה"</item>
+        <item>"ערסית"</item>
+        <item>"חמודה"</item>
+        <item>"חיה בסרט"</item>
+        <item>"עסוקה"</item>
+        <item>"בלשית"</item>
+        <item>"מיושנת"</item>
+        <item>"מצחיקה"</item>
+        <item>"רעבה"</item>
+        <item>"נאמנה"</item>
+        <item>"גרידית"</item>
+        <item>"מהירה"</item>
+        <item>"ישנונית"</item>
+        <item>"קופצנית"</item>
+        <item>"עקשנית"</item>
+        <item>"עדינה"</item>
+        <item>"סקרנית"</item>
+        <item>"ערמומית"</item>
+        <item>"טורפת"</item>
+
+    </string-array>
+    <string-array name="avatars_male">
+        <item>"שחרחר"</item>
+        <item>"אמיץ"</item>
+        <item>"חכם"</item>
+        <item>"קשוח"</item>
+        <item>"עיוור"</item>
+        <item>"קפדן"</item>
+        <item>"גאון"</item>
+        <item>"מתולתל"</item>
+        <item>"מנומס"</item>
+        <item>"אסופי"</item>
+        <item>"משקפופר"</item>
+        <item>"ילדותי"</item>
+        <item>"אכזרי"</item>
+        <item>"מאופק"</item>
+        <item>"קרואלה"</item>
+        <item>"קצוץ"</item>
+        <item>"ביישן"</item>
+        <item>"מפוזר"</item>
+        <item>"קול"</item>
+        <item>"מזוקן"</item>
+        <item>"חנון"</item>
+        <item>"גאון"</item>
+        <item>"מתוקתק"</item>
+        <item>"מסטול"</item>
+        <item>"מתחכם"</item>
+        <item>"מרושל"</item>
+        <item>"מבולבל"</item>
+        <item>"מסודר"</item>
+        <item>"עיוור"</item>
+        <item>"פרופסור"</item>
+        <item>"גאון"</item>
+        <item>"מתולתל"</item>
+        <item>"רופא"</item>
+        <item>"ערס"</item>
+        <item>"חמוד"</item>
+        <item>"חי בסרט"</item>
+        <item>"עסוק"</item>
+        <item>"בלש"</item>
+        <item>"מיושן"</item>
+        <item>"מצחיק"</item>
+        <item>"רעב"</item>
+        <item>"נאמן"</item>
+
+        <item>"גרידי"</item>
+        <item>"מהיר"</item>
+        <item>"ישנוני"</item>
+        <item>"קופצני"</item>
+        <item>"עקשן"</item>
+        <item>"עדין"</item>
+        <item>"סקרן"</item>
+        <item>"ערמומי"</item>
+        <item>"טורף"</item>
+
+    </string-array>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="fire_base_failed">הפעולה נכשלה</string>
+    <string name="location_get_permission">לצורך איכון השחקנים, כדי שתוכלו לשחק מול שחקנים באיזור שלכם, יש לאפשר הרשאת גישה למיקומים.\n\nשימו לב!!\nשחקן שלא מציג מיקום לא יוכל לראות את המיקומים של השחקנים האחרים</string>
+    <string name="ok">אישור</string>
+    <string name="cancel">ביטול</string>
+    <string name="clear">נקה</string>
+    <string name="user_already_exist">משתמש כבר קיים. יש להחליף שם משתמש</string>
+    <string name="powored_by">האפליקציה פותחה במסגרת קורס אנדרואיד על ידי \'קמא-טק\' בשיתוף עם חברת Fider העולמית</string>
+</resources>

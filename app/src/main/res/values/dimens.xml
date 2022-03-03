@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="downwards_drop_shadow_height">6dp</dimen>
+    <!-- Default screen margins, per the Android Design guidelines. -->
+    <dimen name="activity_horizontal_margin">16dp</dimen>
+    <dimen name="activity_vertical_margin">16dp</dimen>
+
+    <dimen name="login_field_width">240dp</dimen>
+    <dimen name="login_field_height">62dp</dimen>
+    <dimen name="login_field_margin">6dp</dimen>
+    <dimen name="login_field_padding">10dp</dimen>
+    <dimen name="item_avatar_text">12dp</dimen>
+    <dimen name="item_avatar_padding">10dp</dimen>
+
+    <dimen name="button_padding_side">30dp</dimen>
+    <dimen name="button_padding_up_bottom">8dp</dimen>
+
+    <dimen name="profile_text_padding">4dp</dimen>
+    <dimen name="text_size_4">24dp</dimen>
+    <dimen name="text_size_3">20dp</dimen>
+    <dimen name="text_size_2">16dp</dimen>
+    <dimen name="text_size_1">12dp</dimen>
+
+</resources>

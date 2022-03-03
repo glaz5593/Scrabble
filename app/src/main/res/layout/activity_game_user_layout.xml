@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:background="@color/gray_dark"
+    android:layout_height="match_parent"
+    tools:context=".ui.activities.GameActivity">
+
+
+    <TextView android:id="@+id/tv_status_1"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/tv_status_2"
+        android:layout_margin="2dp"
+        android:gravity="center|start"
+        android:padding="4dp"
+        android:background="@drawable/border_white_style_2"
+        android:text="ניקוד"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_width="100dp"
+        android:textSize="@dimen/text_size_1"
+        android:textColor="@color/text_color_white"
+        android:layout_height="0dp"/>
+    <TextView android:id="@+id/tv_status_2"
+        app:layout_constraintTop_toBottomOf="@id/tv_status_1"
+        android:padding="4dp"
+        android:layout_margin="2dp"
+        android:gravity="center|start"
+        android:layout_marginTop="1dp"
+        android:text="אבנים"
+        android:background="@drawable/border_white_style_3"
+        app:layout_constraintBottom_toBottomOf="@id/iv_icon2"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:textSize="@dimen/text_size_1"
+        android:layout_width="100dp"
+        android:textColor="@color/text_color_white"
+        android:layout_height="0dp"/>
+
+    <TextView android:id="@+id/tv_status_result_1"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/tv_status_2"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:textColor="@color/text_color_white"
+        android:paddingEnd="4dp"
+        android:text="34"
+        android:textSize="@dimen/text_size_2"
+        android:layout_margin="2dp"
+        android:layout_width="wrap_content"
+        android:gravity="center"
+        android:layout_height="0dp"/>
+    <TextView android:id="@+id/tv_status_result_2"
+        app:layout_constraintTop_toBottomOf="@id/tv_status_1"
+        app:layout_constraintBottom_toBottomOf="@id/tv_status_2"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:gravity="center"
+        android:textColor="@color/text_color_white"
+        android:paddingEnd="4dp"
+        android:text="70"
+        android:layout_margin="2dp"
+        android:textSize="@dimen/text_size_2"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"/>
+
+    <ImageView android:id="@+id/iv_icon2"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_gravity="center"
+        android:padding="4dp"
+        android:src="@drawable/ic_round_pest_control_rodent_24" />
+
+    <TextView android:id="@+id/tv_nickName2"
+        app:layout_constraintTop_toTopOf="@id/iv_icon2"
+        app:layout_constraintStart_toEndOf="@id/iv_icon2"
+        android:paddingStart="@dimen/profile_text_padding"
+        android:text="משה גלזמן"
+        android:textSize="@dimen/text_size_3"
+        android:gravity="start|top"
+        android:layout_width="wrap_content"
+        android:textColor="@drawable/text_color_white"
+        android:layout_height="wrap_content"/>
+
+    <TextView android:id="@+id/tv_description2"
+        app:layout_constraintBottom_toBottomOf="@id/iv_icon2"
+        app:layout_constraintStart_toEndOf="@id/iv_icon2"
+        android:paddingStart="@dimen/profile_text_padding"
+        android:text="משה גלזמן"
+        android:textSize="@dimen/text_size_2"
+        android:layout_width="wrap_content"
+        android:gravity="start|bottom"
+        android:textColor="@drawable/text_color_white"
+        android:layout_height="wrap_content"/>
+
+    <com.moshe.glaz.scrabble.ui.board.CardsView
+        android:id="@+id/cv_user"
+        android:layout_margin="4dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"/>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+        <com.moshe.glaz.scrabble.ui.views.VScroll
+            android:id="@+id/vScroll"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <com.moshe.glaz.scrabble.ui.views.HScroll
+                android:id="@+id/hScroll"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <RelativeLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+
+                    <LinearLayout android:id="@+id/ll_content"
+                        android:layout_width="wrap_content"
+                        android:orientation="vertical"
+                        android:layout_height="wrap_content">
+
+                    </LinearLayout>
+                </RelativeLayout>
+
+
+            </com.moshe.glaz.scrabble.ui.views.HScroll>
+        </com.moshe.glaz.scrabble.ui.views.VScroll>
+
+</RelativeLayout>

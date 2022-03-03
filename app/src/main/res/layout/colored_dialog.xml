@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:background="#ffffff"
+    android:padding="12dp"
+    android:layout_height="match_parent">
+
+    <LinearLayout android:id="@+id/ll_main"
+        android:layout_width="match_parent"
+        android:orientation="vertical"
+        android:background="#eeeeee"
+        android:layout_height="match_parent">
+        <SeekBar android:id="@+id/sb_red"
+            android:layout_margin="4dp"
+            android:layout_width="match_parent"
+            android:thumbTint="#ff0000"
+            android:max="255"
+            android:layout_height="50dp"/>
+
+        <SeekBar android:id="@+id/sb_green"
+            android:layout_margin="4dp"
+            android:layout_width="match_parent"
+            android:max="255"
+            android:thumbTint="#00ff00"
+            android:layout_height="50dp"/>
+
+        <SeekBar android:id="@+id/sb_blue"
+            android:layout_margin="4dp"
+            android:layout_width="match_parent"
+            android:max="255"
+            android:thumbTint="#0000ff"
+            android:layout_height="50dp"/>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_margin="4dp"
+            android:layout_height="50dp">
+
+            <TextView android:id="@+id/tv_red"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toLeftOf="@id/tv_green"
+                android:layout_width="50dp"
+                android:gravity="center"
+                android:text="34"
+                android:textStyle="bold"
+                android:textColor="#000000"
+                android:background="#ffdddd"
+                android:layout_height="match_parent"/>
+
+            <TextView android:id="@+id/tv_green"
+                app:layout_constraintLeft_toRightOf="@id/tv_red"
+                app:layout_constraintRight_toLeftOf="@id/tv_blue"
+                android:layout_width="50dp"
+                android:gravity="center"
+                android:text="34"
+                android:textStyle="bold"
+                android:textColor="#000000"
+                android:background="#ddffdd"
+                android:layout_height="match_parent"/>
+            <TextView android:id="@+id/tv_blue"
+                app:layout_constraintLeft_toRightOf="@id/tv_green"
+                app:layout_constraintRight_toRightOf="parent"
+                android:layout_width="50dp"
+                android:gravity="center"
+                android:text="34"
+                android:textStyle="bold"
+                android:textColor="#000000"
+                android:background="#ddddff"
+                android:layout_height="match_parent"/>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_margin="4dp"
+            android:orientation="horizontal"
+            android:layout_height="50dp">
+            <TextView android:id="@+id/btn_ok"
+                android:layout_width="120dp"
+                android:text="אישור"
+                android:gravity="center"
+                android:background="#aaaaaa"
+                android:textColor="#404040"
+                android:layout_height="match_parent"/>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_weight="1"
+                android:padding="4dp"
+                android:layout_height="match_parent">
+
+                <View
+                    android:id="@+id/v_selected_color"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" />
+            </RelativeLayout>
+
+            <TextView android:id="@+id/btn_cancel"
+                android:layout_width="120dp"
+                android:text="ביטול"
+                android:gravity="center"
+                android:background="#aaaaaa"
+                android:textColor="#404040"
+                android:layout_marginEnd="4dp"
+                android:layout_height="match_parent"/>
+        </LinearLayout>
+
+    </LinearLayout>
+
+
+</LinearLayout>

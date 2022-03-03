@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "86830218359",
+    "firebase_url": "https://scrabble-332321-default-rtdb.firebaseio.com",
+    "project_id": "scrabble-332321",
+    "storage_bucket": "scrabble-332321.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:86830218359:android:b1e4138a97ee7e6e2c9a72",
+        "android_client_info": {
+          "package_name": "com.moshe.glaz.scrabble"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "86830218359-j2fc0ud9aahg46b10t8q4s30kakq26nc.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA-2YRsd31uOo0nUQ0afo1ledr_hTLwaXM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "86830218359-j2fc0ud9aahg46b10t8q4s30kakq26nc.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
