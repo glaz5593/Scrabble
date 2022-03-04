@@ -338,7 +338,7 @@ public class DataSourceManager {
             if(val>0) {
                 dataSource.level++;
             }
-            dataSource.values[i / 9][i %9]=val;
+            dataSource.baseValues[i / 9][i %9]=val;
         }
         for (int i=0;i<array[1].length();i++) {
             char c = array[1].toCharArray()[i];
@@ -347,6 +347,8 @@ public class DataSourceManager {
         }
         sudokuGamesDataSource.add(dataSource);
     }
-
+    public DataSource getSudokuDataSource(int id) {
+        return sudokuGamesDataSource.get(id);
+    }
     // endregion
 }

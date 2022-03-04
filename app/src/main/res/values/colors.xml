@@ -35,4 +35,10 @@
     <color name="orange_light">#FFEBCF</color>
     <color name="status_bar_color">#808080</color>
 
+    <color name="sudoku_text_color_base_value">#404040</color>
+    <color name="sudoku_text_color_suggestion_value">#804000</color>
+    <color name="sudoku_text_color_player1_value">#203060</color>
+    <color name="sudoku_text_color_player2_value">#602030</color>
+
+
 </resources>

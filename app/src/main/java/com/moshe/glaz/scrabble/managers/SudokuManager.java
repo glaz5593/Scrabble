@@ -43,13 +43,13 @@ public class SudokuManager {
         return false;
     }
 
-    public Game createNewGame(User user1, User user2,ActionListener listener){
+    public Game createNewGame(String user1, String user2,ActionListener listener){
         Game res=new Game();
-        res.dataSource=DataSourceManager.getInstance().sudokuGamesDataSource.get(0);
+        res.dataSourceId=1;
         res.user1=new Player();
         res.user2=new Player();
-        res.user1.uid=user1.uid;
-        res.user2.uid=user2.uid;
+        res.user1.uid=user1;
+        res.user2.uid=user2;
         res.startDate=new Date();
 
         FirebaseManager.getInstance().addGame(res,listener);

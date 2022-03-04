@@ -7,5 +7,5 @@ public class Game {
     public Date startDate;
     public Player user1;
     public Player user2;
-    public DataSource dataSource;
+    public int dataSourceId;
 }

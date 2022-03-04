@@ -18,4 +18,16 @@
         <item name="android:paddingBottom">@dimen/button_padding_up_bottom</item>
            <item name="android:gravity">center_vertical|center_horizontal</item>
     </style>
+
+    <style name="Sudoku_number_button" parent="android:Widget.TextView">
+        <item name="android:background">@drawable/sudoku_button_number_background</item>
+        <item name="android:textColor">@drawable/text_color_white</item>
+        <item name="android:onClick">onNumberButtonClick</item>
+        <item name="android:textSize">@dimen/text_size_2</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:layout_width">0dp</item>
+        <item name="android:gravity">center_vertical|center_horizontal</item>
+        <item name="android:layout_margin">4dp</item>
+    </style>
+
 </resources>

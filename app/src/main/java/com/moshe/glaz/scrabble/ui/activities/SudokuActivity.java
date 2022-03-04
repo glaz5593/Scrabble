@@ -16,12 +16,14 @@ import android.widget.TextView;
 import com.moshe.glaz.scrabble.R;
 import com.moshe.glaz.scrabble.databinding.ActivitySudokuBinding;
 import com.moshe.glaz.scrabble.enteties.User;
+import com.moshe.glaz.scrabble.enteties.sudoku.DataSource;
 import com.moshe.glaz.scrabble.enteties.sudoku.Game;
 import com.moshe.glaz.scrabble.enteties.sudoku.Player;
 import com.moshe.glaz.scrabble.managers.DataSourceManager;
 import com.moshe.glaz.scrabble.managers.LogicManager;
 import com.moshe.glaz.scrabble.managers.SudokuManager;
 import com.moshe.glaz.scrabble.infrastructure.*;
+import com.moshe.glaz.scrabble.ui.views.FontFitTextView;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -32,6 +34,7 @@ ActivitySudokuBinding binding;
     User user2;
     Game game;
     TextView[][] views;
+    TextView[] buttons;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,7 +42,22 @@ ActivitySudokuBinding binding;
         binding=ActivitySudokuBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
         UIUtils.setStatusBarColor(this);
+        buttons = new TextView[]{
+                binding.btn1,
+                binding.btn2,
+                binding.btn3,
+                binding.btn4,
+                binding.btn5,
+                binding.btn6,
+                binding.btn7,
+                binding.btn8,
+                binding.btn9
+        };
+
+        buttons[3].setSelected(true);
     }
+
+    DataSource dataSource;
 
     @Override
     protected void onResume() {
@@ -49,7 +67,7 @@ ActivitySudokuBinding binding;
             finish();
             return;
         }
-
+        dataSource=DataSourceManager.getInstance().getSudokuDataSource(game.dataSourceId);
         if(views==null){
             createTextViewBoardLayout();
         }
@@ -100,12 +118,32 @@ ActivitySudokuBinding binding;
         for (int y = 0; y < 9; y++) {
             LinearLayout layout = getNewLayout();
             for (int x = 0; x < 9; x++) {
-                ViewPosition o =new ViewPosition(x,y);
-                TextView tv = getNewTextView(o);
-                views[x][y]=tv;
-                layout.addView(tv);
+                ViewPosition o = new ViewPosition(x, y, dataSource.baseValues[x][y] > 0);
+                FontFitTextView tv = getNewTextView(o);
+                if (o.isBaseData) {
+                    tv.setText(dataSource.baseValues[x][y]+"");
+                    tv.setTextColor(UIUtils.getColor(R.color.sudoku_text_color_base_value));
+                }
 
-                if(x == 2 || x == 5){
+                layout.addView(tv);
+                views[x][y] = tv;
+
+                if(x==4 && y==4){
+                    StringBuilder builder=new StringBuilder();
+                    builder.append("1  ");
+                    builder.append(TextUtils.getHTMLText_white("2  "));
+                    builder.append("3");
+                    builder.append(TextUtils.getHTMLEnter());
+                    builder.append(TextUtils.getHTMLText_white("4  "));
+                    builder.append("5  6");
+                    builder.append(TextUtils.getHTMLEnter());
+                    builder.append("7  8  ");
+                    builder.append(TextUtils.getHTMLText_white("9"));
+                    tv.setText(Html.fromHtml(builder.toString(),HtmlCompat.FROM_HTML_MODE_LEGACY));
+                    tv.setTextColor(UIUtils.getColor(R.color.sudoku_text_color_suggestion_value));
+                }
+
+                if (x == 2 || x == 5) {
                     layout.addView(getEmptyViewCell());
                 }
             }
@@ -129,16 +167,17 @@ ActivitySudokuBinding binding;
 
     class ViewPosition {
         int x, y;
-
-        ViewPosition(int x, int y) {
+        boolean isBaseData;
+        ViewPosition(int x, int y,boolean isBaseData) {
             this.x = x;
             this.y = y;
+            this.isBaseData = isBaseData;
         }
     }
 
-    private TextView getNewTextView(ViewPosition position) {
+    private FontFitTextView getNewTextView(ViewPosition position) {
         LinearLayout.LayoutParams viewParam = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT,1.0f);
-        TextView tv = new TextView(getApplicationContext());
+        FontFitTextView tv = new FontFitTextView(getApplicationContext());
         tv.setTag(position);
         tv.setGravity(Gravity.CENTER);
         tv.setBackgroundResource(R.drawable.sudoku_background);
@@ -159,6 +198,10 @@ ActivitySudokuBinding binding;
                 views[x][y].setActivated(viewPosition.x==x && viewPosition.y==y);
             }
         }
+    }
+
+    private void onNumberButtonClick(View view) {
+
     }
 
     private int getRectNumber(int x, int y) {

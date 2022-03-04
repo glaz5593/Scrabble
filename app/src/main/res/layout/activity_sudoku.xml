@@ -158,11 +158,71 @@
 
 
     <androidx.constraintlayout.widget.ConstraintLayout
-    android:id="@+id/cl_panel"
-    android:layout_width="match_parent"
-    app:layout_constraintBottom_toBottomOf="parent"
-    app:layout_constraintTop_toBottomOf="@id/cl_board"
-    android:layout_height="120dp">
+        android:id="@+id/cl_panel"
+        android:layout_width="match_parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/cl_board"
+        android:layout_height="120dp">
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/cl_buttons"
+            android:layout_width="match_parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_height="60dp">
+            <TextView style="@style/Sudoku_number_button"
+                android:id="@+id/btn_1"
+                android:text="1"
+                app:layout_constraintEnd_toStartOf="@id/btn_2"
+                app:layout_constraintStart_toStartOf="parent"/>
+
+            <TextView style="@style/Sudoku_number_button"
+                android:id="@+id/btn_2"
+                android:text="2"
+                app:layout_constraintEnd_toStartOf="@id/btn_3"
+                app:layout_constraintStart_toEndOf="@id/btn_1"/>
+
+            <TextView style="@style/Sudoku_number_button"
+                android:id="@+id/btn_3"
+                android:text="3"
+                app:layout_constraintEnd_toStartOf="@id/btn_4"
+                app:layout_constraintStart_toEndOf="@id/btn_2"/>
+
+            <TextView style="@style/Sudoku_number_button"
+                android:id="@+id/btn_4"
+                android:text="4"
+                app:layout_constraintEnd_toStartOf="@id/btn_5"
+                app:layout_constraintStart_toEndOf="@id/btn_3"/>
+
+            <TextView style="@style/Sudoku_number_button"
+                android:id="@+id/btn_5"
+                android:text="5"
+                app:layout_constraintEnd_toStartOf="@id/btn_6"
+                app:layout_constraintStart_toEndOf="@id/btn_4"/>
+
+            <TextView style="@style/Sudoku_number_button"
+                android:id="@+id/btn_6"
+                android:text="6"
+                app:layout_constraintEnd_toStartOf="@id/btn_7"
+                app:layout_constraintStart_toEndOf="@id/btn_5"/>
+
+            <TextView style="@style/Sudoku_number_button"
+                android:id="@+id/btn_7"
+                android:text="7"
+                app:layout_constraintEnd_toStartOf="@id/btn_8"
+                app:layout_constraintStart_toEndOf="@id/btn_6"/>
+
+            <TextView style="@style/Sudoku_number_button"
+                android:id="@+id/btn_8"
+                android:text="8"
+                app:layout_constraintEnd_toStartOf="@id/btn_9"
+                app:layout_constraintStart_toEndOf="@id/btn_7"/>
+
+            <TextView style="@style/Sudoku_number_button"
+            android:id="@+id/btn_9"
+                android:text="9"
+                app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/btn_8"/>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

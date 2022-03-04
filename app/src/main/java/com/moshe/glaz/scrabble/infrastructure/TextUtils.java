@@ -31,6 +31,9 @@ public class TextUtils {
         return "<font color=\"blue\">" + text + "</font>";
     }
 
+    public static String getHTMLText_white(String text) {
+        return "<font color=\"#ffffff\">" + text + "</font>";
+    }
     public static String getHTMLEnter() {
         return "<BR>";
     }

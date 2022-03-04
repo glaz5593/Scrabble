@@ -140,15 +140,9 @@ public class LogicManager {
     }
 
     public void startSuggestion(SuggestionGame suggestionGame,ActionListener listener) {
-        Game game = new Game();
-        game.user1 = new Player();
-        game.user2 = new Player();
-        game.user1.uid = suggestionGame.user1;
-        game.user2.uid = suggestionGame.user2;
-
         ActionListener suggestionListener = result -> {
             if (!result.success) {
-                suggestionGame.gameUid ="";
+                suggestionGame.gameUid = "";
             }
             listener.onResult(result);
         };
@@ -157,12 +151,13 @@ public class LogicManager {
             if (!result.success) {
                 listener.onResult(result);
             } else {
+                Game game = (Game) result.result;
                 suggestionGame.gameUid = game.uid;
                 FirebaseManager.getInstance().updateSuggestionGame(suggestionGame, suggestionListener);
             }
         };
 
-        FirebaseManager.getInstance().addGame(game, gameListener);
+        SudokuManager.getInstance().createNewGame(suggestionGame.user1, suggestionGame.user2, gameListener);
     }
 
     public void cancelSuggestion(SuggestionGame suggestionGame,ActionListener listener) {
