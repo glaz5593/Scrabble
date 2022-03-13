@@ -3,19 +3,19 @@ package com.moshe.glaz.scrabble.ui.activities;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.text.HtmlCompat;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.text.Html;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.moshe.glaz.scrabble.R;
 import com.moshe.glaz.scrabble.databinding.ActivitySudokuBinding;
+import com.moshe.glaz.scrabble.enteties.Position;
 import com.moshe.glaz.scrabble.enteties.User;
+import com.moshe.glaz.scrabble.enteties.sudoku.Action;
 import com.moshe.glaz.scrabble.enteties.sudoku.DataSource;
 import com.moshe.glaz.scrabble.enteties.sudoku.Game;
 import com.moshe.glaz.scrabble.enteties.sudoku.Player;
@@ -26,14 +26,17 @@ import com.moshe.glaz.scrabble.infrastructure.*;
 import com.moshe.glaz.scrabble.ui.views.FontFitTextView;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Date;
 
 public class SudokuActivity extends AppCompatActivity {
 ActivitySudokuBinding binding;
     User user1;
     User user2;
     Game game;
-    TextView[][] views;
+    Player myPlayer;
+    Player otherPlayer;
+
+    FontFitTextView[][] views;
     TextView[] buttons;
 
     @Override
@@ -54,7 +57,6 @@ ActivitySudokuBinding binding;
                 binding.btn9
         };
 
-        buttons[3].setSelected(true);
     }
 
     DataSource dataSource;
@@ -68,6 +70,15 @@ ActivitySudokuBinding binding;
             return;
         }
         dataSource=DataSourceManager.getInstance().getSudokuDataSource(game.dataSourceId);
+
+        if(LogicManager.getInstance().getUser().uid.equals(game.user1.uid)){
+            otherPlayer=game.user2;
+            myPlayer =  game.user1 ;
+        }else{
+            otherPlayer=game.user1;
+            myPlayer = game.user2;
+        }
+
         if(views==null){
             createTextViewBoardLayout();
         }
@@ -113,35 +124,21 @@ ActivitySudokuBinding binding;
     }
 
     public void createTextViewBoardLayout() {
-        views = new TextView[9][9];
+        views = new FontFitTextView[9][9];
 
         for (int y = 0; y < 9; y++) {
             LinearLayout layout = getNewLayout();
             for (int x = 0; x < 9; x++) {
-                ViewPosition o = new ViewPosition(x, y, dataSource.baseValues[x][y] > 0);
+                Position o = new Position(x, y);
                 FontFitTextView tv = getNewTextView(o);
-                if (o.isBaseData) {
-                    tv.setText(dataSource.baseValues[x][y]+"");
+
+                if (dataSource.baseValues.get(o) > 0) {
+                    tv.setText(dataSource.baseValues.get(o) +"");
                     tv.setTextColor(UIUtils.getColor(R.color.sudoku_text_color_base_value));
                 }
 
                 layout.addView(tv);
                 views[x][y] = tv;
-
-                if(x==4 && y==4){
-                    StringBuilder builder=new StringBuilder();
-                    builder.append("1  ");
-                    builder.append(TextUtils.getHTMLText_white("2  "));
-                    builder.append("3");
-                    builder.append(TextUtils.getHTMLEnter());
-                    builder.append(TextUtils.getHTMLText_white("4  "));
-                    builder.append("5  6");
-                    builder.append(TextUtils.getHTMLEnter());
-                    builder.append("7  8  ");
-                    builder.append(TextUtils.getHTMLText_white("9"));
-                    tv.setText(Html.fromHtml(builder.toString(),HtmlCompat.FROM_HTML_MODE_LEGACY));
-                    tv.setTextColor(UIUtils.getColor(R.color.sudoku_text_color_suggestion_value));
-                }
 
                 if (x == 2 || x == 5) {
                     layout.addView(getEmptyViewCell());
@@ -165,17 +162,117 @@ ActivitySudokuBinding binding;
         });
     }
 
-    class ViewPosition {
-        int x, y;
-        boolean isBaseData;
-        ViewPosition(int x, int y,boolean isBaseData) {
-            this.x = x;
-            this.y = y;
-            this.isBaseData = isBaseData;
+    private String getSuggestionHtmlText(ArrayList<Integer> values) {
+        StringBuilder builder=new StringBuilder();
+        for(int i=1;i<10;i++){
+            builder.append(getSuggestionHtmlNumberText(i,values));
+            if(i==3||i==6){
+                builder.append(TextUtils.getHTMLEnter());
+             }else{
+                if(i!=9) {
+                    builder.append("  ");
+                }
+            }
+        }
+
+        return  builder.toString();
+    }
+
+    private String getSuggestionHtmlNumberText(int value,ArrayList<Integer> values){
+        if(values.contains(value)){
+            return value+"";
+        }else{
+            return TextUtils.getHTMLText_white(value+"");
         }
     }
 
-    private FontFitTextView getNewTextView(ViewPosition position) {
+    long isSuggestionActionEquals(){
+        if(otherPlayer.suggestionAction.hasValue() && myPlayer.suggestionAction.hasValue()){
+            if(otherPlayer.suggestionAction.position.equals(myPlayer.suggestionAction.position)){
+                if(otherPlayer.suggestionAction.time > myPlayer.suggestionAction.time ){
+                    return myPlayer.suggestionAction.time-otherPlayer.suggestionAction.time;
+                }
+            }
+        }
+        return 0;
+    }
+
+    void initViews(){
+        // מגדיר את המשבצת שהשחקן שלי בחר בלוח (אם קיים)
+        Position selectedPosition=null;
+        // מגדיר את המספרים שהשחקן שלי בחר כדי להדגיש את שאר המספרים הזהים בלוח
+        ArrayList<Integer> selectedNumbers=new ArrayList<>();
+        int rectNumSelected=0;
+
+        // בודק אם השחקן שלי תפס משבצת
+        if(myPlayer.selectedCell != null){
+            // שומר את המיקום של המשבצת
+            selectedPosition=myPlayer.selectedCell.position;
+            rectNumSelected=getRectNumber(selectedPosition.x, selectedPosition.y);
+
+            // אם יש שם ערך זה אומר שמדובר בתא ישן שכבר שמו בו ערך
+            if(myPlayer.selectedCell.value > 0){
+                selectedNumbers.add(myPlayer.selectedCell.value);
+                // אם לא, אז אני ארצה להדגיש גם מספרים שהשחקן שלי רשם כהצעה במשבצת שבחר
+            }
+        }
+
+        if(myPlayer.suggestionAction!= null && myPlayer.suggestionAction.hasValue()){
+            selectedNumbers.addAll(myPlayer.suggestionAction.values);
+        }
+
+
+
+        //עובר בלולאה על כל הפקדים כדי להגדיר את הנתונים שלהם
+        for (int y = 0; y < 9; y++) {
+            for (int x = 0; x < 9; x++) {
+                FontFitTextView tv = views[x][y];
+
+                //
+                // setBackground
+                //
+                // בודק אם מדובר במשבצת ריקה שנבחרה על ידי השחקן שלי
+                if (game.board.get(x, y) == 0 && myPlayer.selectedCell != null && myPlayer.selectedCell.position.equals(x, y)) {
+                    tv.setBackgroundResource(R.drawable.sudoku_background_focus);
+                    // בודק אם מדובר במשבצת שנבחרה על ידי השחקן השני
+                } else if (selectedPosition != null && selectedPosition.equals(x, y)) {
+                    tv.setBackgroundResource(R.drawable.sudoku_background_other_player);
+                } else {
+                    tv.setBackgroundResource(R.drawable.sudoku_background);
+                }
+
+                //
+                // setText
+                //
+                if (game.board.get(x, y) > 0) {
+                    tv.setText(game.board.get(x, y) + "");
+                    tv.setTextColor(UIUtils.getColor(R.color.sudoku_text_color_base_value));
+                } else if (selectedPosition != null && selectedPosition.equals(x, y) && myPlayer.hasSuggestionValue()) {
+                    tv.setText(Html.fromHtml(getSuggestionHtmlText(myPlayer.suggestionAction.values),HtmlCompat.FROM_HTML_MODE_LEGACY));
+                    tv.setTextColor(UIUtils.getColor(R.color.sudoku_text_color_suggestion_value));
+                } else {
+                    tv.setText("");
+                }
+
+                //
+                // set state
+                //
+                if (selectedPosition != null && !selectedPosition.equals(x, y)) {
+                    int rectNum=getRectNumber(x, y);
+                    boolean isSameRect = rectNum==rectNumSelected;
+                    tv.setSelected(selectedPosition.x == x || selectedPosition.y == y || isSameRect);
+                    int value=game.board.get(x,y);
+                    tv.setActivated(selectedNumbers.contains(value));
+                }
+
+                //
+                // set text color
+                //
+            }
+        }
+    }
+
+    private FontFitTextView getNewTextView(Position position) {
         LinearLayout.LayoutParams viewParam = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT,1.0f);
         FontFitTextView tv = new FontFitTextView(getApplicationContext());
         tv.setTag(position);
@@ -183,21 +280,21 @@ ActivitySudokuBinding binding;
         tv.setBackgroundResource(R.drawable.sudoku_background);
         tv.setLayoutParams(viewParam);
         tv.setFocusable(true);
+        tv.setSelected(false);
+        tv.setActivated(false);
         tv.setOnClickListener(v->{
-            onCellClick((ViewPosition)v.getTag());
+            onCellClick((Position)v.getTag());
         });
         return tv;
     }
 
-    private void onCellClick(ViewPosition viewPosition) {
+    private void onCellClick(Position position) {
+        myPlayer.selectedCell=new Action();
+        myPlayer.selectedCell.position=position;
+        myPlayer.selectedCell.time=new Date().getTime();
+        myPlayer.selectedCell.value=game.board.get(position);
 
-        for (int y = 0; y < 9; y++) {
-            for (int x = 0; x < 9; x++) {
-                boolean isSameRect=getRectNumber(x,y) == getRectNumber(viewPosition.x,viewPosition.y);
-                views[x][y].setSelected(viewPosition.x==x || viewPosition.y==y || isSameRect);
-                views[x][y].setActivated(viewPosition.x==x && viewPosition.y==y);
-            }
-        }
+        initViews();
     }
 
     private void onNumberButtonClick(View view) {

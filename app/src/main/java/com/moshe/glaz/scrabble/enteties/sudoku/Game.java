@@ -8,4 +8,5 @@ public class Game {
     public Player user1;
     public Player user2;
     public int dataSourceId;
+    public Board board=new Board();
 }

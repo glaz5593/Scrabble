@@ -2,7 +2,7 @@ package com.moshe.glaz.scrabble.enteties.sudoku;
 
 public class DataSource {
     public int id;
-    public int[][] values;
-    public int[][] baseValues;
+    public Board values;
+    public Board baseValues;
     public int level;
 }

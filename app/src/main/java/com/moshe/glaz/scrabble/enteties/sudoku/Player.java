@@ -13,6 +13,7 @@ public class Player {
     public SuggestionAction suggestionAction;
     public ArrayList<Action> actions;
     public ArrayList<Action> badActions;
+    public Action selectedCell;
 
     public int getScore(){
         int res=0;
@@ -32,5 +33,9 @@ public class Player {
         }
 
         return suggestionAction.score;
+    }
+
+    public boolean hasSuggestionValue() {
+        return suggestionAction != null && suggestionAction.hasValue();
     }
 }

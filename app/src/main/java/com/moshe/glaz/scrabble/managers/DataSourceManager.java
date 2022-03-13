@@ -14,6 +14,7 @@ import com.moshe.glaz.scrabble.enteties.SuggestionGame;
 import com.moshe.glaz.scrabble.enteties.SuggestionGames;
 import com.moshe.glaz.scrabble.enteties.User;
 import com.moshe.glaz.scrabble.enteties.Users;
+import com.moshe.glaz.scrabble.enteties.sudoku.Board;
 import com.moshe.glaz.scrabble.enteties.sudoku.DataSource;
 import com.moshe.glaz.scrabble.infrastructure.UIUtils;
 import com.moshe.glaz.scrabble.infrastructure.Utils;
@@ -329,8 +330,8 @@ public class DataSourceManager {
         String[] array = data.split(",");
         DataSource dataSource = new DataSource();
         dataSource.id = id;
-        dataSource.baseValues = new int[9][9];
-        dataSource.values = new int[9][9];
+        dataSource.baseValues = new Board();
+        dataSource.values = new Board();
 
         for (int i=0;i<array[0].length();i++) {
             char c = array[0].toCharArray()[i];
@@ -338,12 +339,12 @@ public class DataSourceManager {
             if(val>0) {
                 dataSource.level++;
             }
-            dataSource.baseValues[i / 9][i %9]=val;
+            dataSource.baseValues.set(i / 9,i %9,val);
         }
         for (int i=0;i<array[1].length();i++) {
             char c = array[1].toCharArray()[i];
             int val=Utils.getInt(c+"");
-            dataSource.values[i / 9][i %9]=val;
+            dataSource.values.set(i / 9,i %9,val);
         }
         sudokuGamesDataSource.add(dataSource);
     }

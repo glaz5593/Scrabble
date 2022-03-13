@@ -46,6 +46,7 @@ public class SudokuManager {
     public Game createNewGame(String user1, String user2,ActionListener listener){
         Game res=new Game();
         res.dataSourceId=1;
+        res.board = DataSourceManager.getInstance().getSudokuDataSource(res.dataSourceId).baseValues;
         res.user1=new Player();
         res.user2=new Player();
         res.user1.uid=user1;
