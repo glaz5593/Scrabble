@@ -14,7 +14,7 @@ public class TextUtils {
     }
 
     public static String getHTMLText_green(String text) {
-        return "<font color=\"#009400\">" + text + "</font>";
+        return "<font color=\"#409040\">" + text + "</font>";
     }
     public static String getHTMLText_Header(String text,int size) {
         return "<H"+size+">" + text + "</H"+size+">";

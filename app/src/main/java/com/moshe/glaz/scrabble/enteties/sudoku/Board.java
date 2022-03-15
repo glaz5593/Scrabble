@@ -14,11 +14,11 @@ public class Board {
     public int get(Position position){
         return values[position.x][position.y];
     }
-
+    public void set(Position position,int value){
+        values[position.x][position.y]=value;
+    }
     public void set(int x,int y,int value){
          values[x][y]=value;
     }
-    public void get(Position position,int value){
-         values[position.x][position.y]=value;
-    }
-}
+
+   }

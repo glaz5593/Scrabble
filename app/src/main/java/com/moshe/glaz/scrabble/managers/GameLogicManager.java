@@ -1,6 +1,7 @@
 package com.moshe.glaz.scrabble.managers;
 
-import com.moshe.glaz.scrabble.enteties.scrabble.Game;
+import com.moshe.glaz.scrabble.enteties.Position;
+import com.moshe.glaz.scrabble.enteties.sudoku.Game;
 
 public class GameLogicManager {
     public  static GameLogicManager instance;
@@ -37,5 +38,9 @@ public class GameLogicManager {
 
     public boolean hasActiveGame() {
         return false;
+    }
+
+    public void setValue(Game game, Position position, Integer integer) {
+
     }
 }

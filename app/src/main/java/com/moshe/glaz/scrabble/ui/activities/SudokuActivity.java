@@ -15,10 +15,10 @@ import com.moshe.glaz.scrabble.R;
 import com.moshe.glaz.scrabble.databinding.ActivitySudokuBinding;
 import com.moshe.glaz.scrabble.enteties.Position;
 import com.moshe.glaz.scrabble.enteties.User;
-import com.moshe.glaz.scrabble.enteties.sudoku.Action;
 import com.moshe.glaz.scrabble.enteties.sudoku.DataSource;
 import com.moshe.glaz.scrabble.enteties.sudoku.Game;
 import com.moshe.glaz.scrabble.enteties.sudoku.Player;
+import com.moshe.glaz.scrabble.enteties.sudoku.SelectedCell;
 import com.moshe.glaz.scrabble.managers.DataSourceManager;
 import com.moshe.glaz.scrabble.managers.LogicManager;
 import com.moshe.glaz.scrabble.managers.SudokuManager;
@@ -56,7 +56,10 @@ ActivitySudokuBinding binding;
                 binding.btn8,
                 binding.btn9
         };
-
+        for(TextView tv:buttons){
+            tv.setTag(Utils.getInt(tv.getText().toString()));
+            tv.setOnClickListener(v->onNumberButtonClick(v));
+        }
     }
 
     DataSource dataSource;
@@ -163,9 +166,19 @@ ActivitySudokuBinding binding;
     }
 
     private String getSuggestionHtmlText(ArrayList<Integer> values) {
+
+        if (values.size()==1){
+            return TextUtils.getHTMLText_green(values.get(0)+"");
+        }
+
         StringBuilder builder=new StringBuilder();
         for(int i=1;i<10;i++){
-            builder.append(getSuggestionHtmlNumberText(i,values));
+            if(values.contains(i)){
+                builder.append(TextUtils.getHTMLText_green(i+""));
+            }else{
+                builder.append(TextUtils.getHTMLText_white(i+""));
+            }
+
             if(i==3||i==6){
                 builder.append(TextUtils.getHTMLEnter());
              }else{
@@ -178,19 +191,11 @@ ActivitySudokuBinding binding;
         return  builder.toString();
     }
 
-    private String getSuggestionHtmlNumberText(int value,ArrayList<Integer> values){
-        if(values.contains(value)){
-            return value+"";
-        }else{
-            return TextUtils.getHTMLText_white(value+"");
-        }
-    }
-
-    long isSuggestionActionEquals(){
-        if(otherPlayer.suggestionAction.hasValue() && myPlayer.suggestionAction.hasValue()){
-            if(otherPlayer.suggestionAction.position.equals(myPlayer.suggestionAction.position)){
-                if(otherPlayer.suggestionAction.time > myPlayer.suggestionAction.time ){
-                    return myPlayer.suggestionAction.time-otherPlayer.suggestionAction.time;
+    long isSelectedCellEquals(){
+        if(otherPlayer.selectedCell.hasValue() && myPlayer.selectedCell.hasValue()){
+            if(otherPlayer.selectedCell.position.equals(myPlayer.selectedCell.position)){
+                if(otherPlayer.selectedCell.time > myPlayer.selectedCell.time ){
+                    return myPlayer.selectedCell.time-otherPlayer.selectedCell.time;
                 }
             }
         }
@@ -198,44 +203,28 @@ ActivitySudokuBinding binding;
     }
 
     void initViews(){
-        // מגדיר את המשבצת שהשחקן שלי בחר בלוח (אם קיים)
-        Position selectedPosition=null;
-        // מגדיר את המספרים שהשחקן שלי בחר כדי להדגיש את שאר המספרים הזהים בלוח
-        ArrayList<Integer> selectedNumbers=new ArrayList<>();
-        int rectNumSelected=0;
+         int rectNumSelected=0;
 
         // בודק אם השחקן שלי תפס משבצת
         if(myPlayer.selectedCell != null){
             // שומר את המיקום של המשבצת
-            selectedPosition=myPlayer.selectedCell.position;
-            rectNumSelected=getRectNumber(selectedPosition.x, selectedPosition.y);
-
-            // אם יש שם ערך זה אומר שמדובר בתא ישן שכבר שמו בו ערך
-            if(myPlayer.selectedCell.value > 0){
-                selectedNumbers.add(myPlayer.selectedCell.value);
-                // אם לא, אז אני ארצה להדגיש גם מספרים שהשחקן שלי רשם כהצעה במשבצת שבחר
-            }
+            rectNumSelected=getRectNumber(myPlayer.selectedCell.position.x, myPlayer.selectedCell.position.y);
         }
-
-        if(myPlayer.suggestionAction!= null && myPlayer.suggestionAction.hasValue()){
-            selectedNumbers.addAll(myPlayer.suggestionAction.values);
-        }
-
-
 
         //עובר בלולאה על כל הפקדים כדי להגדיר את הנתונים שלהם
         for (int y = 0; y < 9; y++) {
             for (int x = 0; x < 9; x++) {
                 FontFitTextView tv = views[x][y];
+                boolean isSelected= myPlayer.selectedCell != null && myPlayer.selectedCell.position.equals(x, y);
 
                 //
                 // setBackground
                 //
                 // בודק אם מדובר במשבצת ריקה שנבחרה על ידי השחקן שלי
-                if (game.board.get(x, y) == 0 && myPlayer.selectedCell != null && myPlayer.selectedCell.position.equals(x, y)) {
+                if (game.getBoardValue(x, y) == 0 && isSelected) {
                     tv.setBackgroundResource(R.drawable.sudoku_background_focus);
                     // בודק אם מדובר במשבצת שנבחרה על ידי השחקן השני
-                } else if (selectedPosition != null && selectedPosition.equals(x, y)) {
+                } else if (otherPlayer.selectedCell != null && otherPlayer.selectedCell.position.equals(x, y)) {
                     tv.setBackgroundResource(R.drawable.sudoku_background_other_player);
                 } else {
                     tv.setBackgroundResource(R.drawable.sudoku_background);
@@ -244,30 +233,26 @@ ActivitySudokuBinding binding;
                 //
                 // setText
                 //
-                if (game.board.get(x, y) > 0) {
-                    tv.setText(game.board.get(x, y) + "");
-                    tv.setTextColor(UIUtils.getColor(R.color.sudoku_text_color_base_value));
-                } else if (selectedPosition != null && selectedPosition.equals(x, y) && myPlayer.hasSuggestionValue()) {
-                    tv.setText(Html.fromHtml(getSuggestionHtmlText(myPlayer.suggestionAction.values),HtmlCompat.FROM_HTML_MODE_LEGACY));
-                    tv.setTextColor(UIUtils.getColor(R.color.sudoku_text_color_suggestion_value));
+                ArrayList<Integer> values = myPlayer.suggestionBoard.asValues(x, y);
+                 if (game.getBoardValue(x, y) > 0) {
+                    tv.setText(game.getBoardValue(x, y) + "");
                 } else {
-                    tv.setText("");
-                }
+                    tv.setText(Html.fromHtml(getSuggestionHtmlText(values),HtmlCompat.FROM_HTML_MODE_LEGACY));
+                 }
 
                 //
                 // set state
-                //
-                if (selectedPosition != null && !selectedPosition.equals(x, y)) {
-                    int rectNum=getRectNumber(x, y);
-                    boolean isSameRect = rectNum==rectNumSelected;
-                    tv.setSelected(selectedPosition.x == x || selectedPosition.y == y || isSameRect);
-                    int value=game.board.get(x,y);
-                    tv.setActivated(selectedNumbers.contains(value));
+                // if (myPlayer.selectedCell != null && !myPlayer.selectedCell)
+                if (myPlayer.selectedCell != null) {
+                    int rectNum = getRectNumber(x, y);
+                    boolean isSameRect = rectNum == rectNumSelected;
+                    tv.setSelected(isSelected || isSameRect);
+                    int value = game.getBoardValue(x, y);
+                    tv.setActivated(values.contains(value));
+                }else{
+                    tv.setSelected(false);
+                    tv.setActivated(false);
                 }
-
-                //
-                // set text color
-                //
             }
         }
     }
@@ -289,16 +274,52 @@ ActivitySudokuBinding binding;
     }
 
     private void onCellClick(Position position) {
-        myPlayer.selectedCell=new Action();
+        if(myPlayer.selectedCell != null) {
+            if (myPlayer.selectedCell.position.equals(position)) {
+                ArrayList<Integer> values = myPlayer.suggestionBoard. asValues(position);
+                if (values.size() == 1) {
+                    myPlayer.addAction(position, values.get(0),7);
+                    initViews();
+                }
+                return;
+            }
+        }
+
+        myPlayer.selectedCell = new SelectedCell();
         myPlayer.selectedCell.position=position;
         myPlayer.selectedCell.time=new Date().getTime();
-        myPlayer.selectedCell.value=game.board.get(position);
 
         initViews();
+        initButtons();
+    }
+
+    private void initButtons() {
+        if (myPlayer.selectedCell == null) {
+            for (TextView tv : buttons) {
+                tv.setSelected(false);
+            }
+            return;
+        }
+
+        ArrayList<Integer> values = myPlayer.suggestionBoard.asValues(myPlayer.selectedCell.position);
+        for (TextView tv : buttons) {
+            tv.setSelected(values.contains(tv.getTag()));
+        }
     }
 
     private void onNumberButtonClick(View view) {
-
+        int value = (Integer) view.getTag();
+        if (myPlayer.selectedCell == null) {
+            return;
+        }
+        if (myPlayer.suggestionBoard.has(myPlayer.selectedCell.position, value)) {
+            myPlayer.suggestionBoard.remove(myPlayer.selectedCell.position, value);
+            view.setSelected(false);
+        } else {
+            myPlayer.suggestionBoard.add(myPlayer.selectedCell.position, value);
+            view.setSelected(true);
+        }
+        initViews();
     }
 
     private int getRectNumber(int x, int y) {

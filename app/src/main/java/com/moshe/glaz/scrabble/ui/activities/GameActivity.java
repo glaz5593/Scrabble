@@ -37,7 +37,7 @@ public class GameActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
 
-        game= GameLogicManager.getInstance().getActiveGame();
+        //game= GameLogicManager.getInstance().getActiveGame();
 
         if(game==null){
             finish();

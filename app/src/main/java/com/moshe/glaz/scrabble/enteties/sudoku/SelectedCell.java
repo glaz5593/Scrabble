@@ -4,17 +4,17 @@ import com.moshe.glaz.scrabble.enteties.Position;
 
 import java.util.ArrayList;
 
-public class SuggestionAction {
-    public SuggestionAction(){
+public class SelectedCell {
+    public SelectedCell(){
         position=new Position();
     }
 
     public Position position;
     public long time;
-    public ArrayList<Integer> values;
     public int score;
 
     public boolean hasValue() {
         return time > 0;
     }
+
 }
