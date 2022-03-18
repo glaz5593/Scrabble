@@ -1,30 +1,38 @@
 package com.moshe.glaz.scrabble.enteties.sudoku;
 
 import com.moshe.glaz.scrabble.enteties.Position;
+import com.moshe.glaz.scrabble.enteties.sudoku.values.BooleanVal;
+import com.moshe.glaz.scrabble.enteties.sudoku.values.IntValues;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class SuggestionBoard {
+public class SuggestionBoard implements Serializable {
     public SuggestionBoard() {
-        values = new boolean[9][9][10];
+        values = new ArrayList<>();
+        for (int y = 0; y < 9; y++) {
+            for (int x = 0; x < 9; x++) {
+                values.add(new IntValues());
+            }
+        }
     }
 
-    private boolean[][][] values;
+    public ArrayList<IntValues> values;
 
     public boolean has(int x, int y, int value) {
-        return values[x][y][value];
+        return values.get((y * 9) + x).values.get(value).value;
     }
 
     public void add(int x, int y, int value) {
-        values[x][y][value] = true;
+        values.get((y * 9) + x).values.get(value).value = true;
     }
 
     public void remove(int x, int y, int value) {
-        values[x][y][value] = false;
+        values.get((y * 9) + x).values.get(value).value = false;
     }
 
     public void clear(int x, int y) {
-        values[x][y] = new boolean[10];
+        values.get((y * 9) + x).clear();
     }
 
     public boolean has(Position position, int value) {
@@ -55,11 +63,12 @@ public class SuggestionBoard {
         ArrayList<Integer> res=new ArrayList<>();
 
         int i=0;
-        for(boolean b : values[x][y]) {
-            if (b) res.add(i);
+        for(BooleanVal b : values.get((y * 9) + x).values) {
+            if (b.value) res.add(i);
             i++;
         }
 
         return res;
     }
+
 }

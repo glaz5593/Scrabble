@@ -3,8 +3,14 @@ package com.moshe.glaz.scrabble.ui.activities;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.text.HtmlCompat;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.text.Html;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -35,9 +41,15 @@ ActivitySudokuBinding binding;
     Game game;
     Player myPlayer;
     Player otherPlayer;
+    int myPlayerColor;
+    int otherPlayerColor;
+    int baseColor;
+boolean isMyPlayerUser1;
 
     FontFitTextView[][] views;
     TextView[] buttons;
+
+    DataSource dataSource;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,9 +72,8 @@ ActivitySudokuBinding binding;
             tv.setTag(Utils.getInt(tv.getText().toString()));
             tv.setOnClickListener(v->onNumberButtonClick(v));
         }
+        baseColor=UIUtils.getColor(R.color.gray_dark);
     }
-
-    DataSource dataSource;
 
     @Override
     protected void onResume() {
@@ -76,16 +87,18 @@ ActivitySudokuBinding binding;
 
         if(LogicManager.getInstance().getUser().uid.equals(game.user1.uid)){
             otherPlayer=game.user2;
-            myPlayer =  game.user1 ;
+            myPlayer =  game.user1;
+            isMyPlayerUser1=true;
         }else{
             otherPlayer=game.user1;
             myPlayer = game.user2;
+            isMyPlayerUser1=false;
         }
 
         if(views==null){
             createTextViewBoardLayout();
         }
-        initDashboardUi();
+        initUsersUi();
     }
 
     private void initUsersUi() {
@@ -102,6 +115,38 @@ ActivitySudokuBinding binding;
 
         binding.tvScore1.setText(Html.fromHtml(getScoreHtmlText(game.user1), HtmlCompat.FROM_HTML_MODE_LEGACY));
         binding.tvScore2.setText(Html.fromHtml(getScoreHtmlText(game.user2), HtmlCompat.FROM_HTML_MODE_LEGACY));
+
+        if(isMyPlayerUser1){
+            myPlayerColor = getPlayerColor(user1.avatar);
+            otherPlayerColor = getPlayerColor(user2.avatar);
+        }else{
+            myPlayerColor = getPlayerColor(user2.avatar);
+            otherPlayerColor = getPlayerColor(user1.avatar);
+        }
+    }
+
+    private int getPlayerColor(int avatar) {
+        Drawable drawable = getDrawable(DataSourceManager.getInstance().getAvatarResId(avatar));
+
+        Bitmap bitmap = Bitmap.createBitmap(drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(bitmap);
+        drawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
+        drawable.draw(canvas);
+
+        int x = bitmap.getWidth() / 20;
+        int y = bitmap.getHeight() / 2;
+        int pixel = bitmap.getPixel(x, y);
+        int redValue = Color.red(pixel);
+        int blueValue = Color.blue(pixel);
+        int greenValue = Color.green(pixel);
+
+        while (redValue + blueValue + greenValue > 250) {
+            redValue = (int) (redValue * 0.9f);
+            blueValue = (int) (blueValue * 0.9f);
+            greenValue = (int) (greenValue * 0.9f);
+        }
+
+        return Color.rgb(redValue, blueValue, greenValue);
     }
 
     private String getScoreHtmlText(Player user) {
@@ -120,10 +165,6 @@ ActivitySudokuBinding binding;
         }
 
         return builder.toString();
-    }
-
-    private void initDashboardUi() {
-        initUsersUi();
     }
 
     public void createTextViewBoardLayout() {
@@ -166,10 +207,13 @@ ActivitySudokuBinding binding;
     }
 
     private String getSuggestionHtmlText(ArrayList<Integer> values) {
-
-        if (values.size()==1){
-            return TextUtils.getHTMLText_green(values.get(0)+"");
+        if (values.size()==0){
+            return ("");
         }
+
+        //if (values.size()==1){
+        //    return TextUtils.getHTMLText_green(values.get(0)+"");
+        //}
 
         StringBuilder builder=new StringBuilder();
         for(int i=1;i<10;i++){
@@ -191,18 +235,8 @@ ActivitySudokuBinding binding;
         return  builder.toString();
     }
 
-    long isSelectedCellEquals(){
-        if(otherPlayer.selectedCell.hasValue() && myPlayer.selectedCell.hasValue()){
-            if(otherPlayer.selectedCell.position.equals(myPlayer.selectedCell.position)){
-                if(otherPlayer.selectedCell.time > myPlayer.selectedCell.time ){
-                    return myPlayer.selectedCell.time-otherPlayer.selectedCell.time;
-                }
-            }
-        }
-        return 0;
-    }
-
     void initViews(){
+        Log.i("initViews","start");
          int rectNumSelected=0;
 
         // בודק אם השחקן שלי תפס משבצת
@@ -215,7 +249,7 @@ ActivitySudokuBinding binding;
         for (int y = 0; y < 9; y++) {
             for (int x = 0; x < 9; x++) {
                 FontFitTextView tv = views[x][y];
-                boolean isSelected= myPlayer.selectedCell != null && myPlayer.selectedCell.position.equals(x, y);
+                boolean isSelected = myPlayer.selectedCell != null && myPlayer.selectedCell.position.equals(x, y);
 
                 //
                 // setBackground
@@ -234,19 +268,101 @@ ActivitySudokuBinding binding;
                 // setText
                 //
                 ArrayList<Integer> values = myPlayer.suggestionBoard.asValues(x, y);
-                 if (game.getBoardValue(x, y) > 0) {
-                    tv.setText(game.getBoardValue(x, y) + "");
+
+
+                if (myPlayer.board.get(x, y) > 0) {
+                    tv.setText(myPlayer.board.get(x, y) + "");
+                    tv.setTextColor(myPlayerColor);
+                } else if (otherPlayer.board.get(x, y) > 0) {
+                    tv.setText(otherPlayer.board.get(x, y) + "");
+                    tv.setTextColor(otherPlayerColor);
+                } else if (dataSource.baseValues.get(x, y) > 0) {
+                    tv.setText(dataSource.baseValues.get(x, y) + "");
+                    tv.setTextColor(baseColor);
                 } else {
-                    tv.setText(Html.fromHtml(getSuggestionHtmlText(values),HtmlCompat.FROM_HTML_MODE_LEGACY));
+                      tv.setText(Html.fromHtml(getSuggestionHtmlText(values),HtmlCompat.FROM_HTML_MODE_LEGACY));
                  }
 
                 //
                 // set state
-                // if (myPlayer.selectedCell != null && !myPlayer.selectedCell)
+                //
                 if (myPlayer.selectedCell != null) {
                     int rectNum = getRectNumber(x, y);
                     boolean isSameRect = rectNum == rectNumSelected;
-                    tv.setSelected(isSelected || isSameRect);
+                    boolean isSameRow=myPlayer.selectedCell.position.y==y;
+                    boolean isSameLine=myPlayer.selectedCell.position.x==x;
+                    tv.setSelected(isSameRow || isSameLine || isSameRect);
+                    int value = game.getBoardValue(x, y);
+                    if(game.getBoardValue(x, y)>0){
+                        values.add(game.getBoardValue(x, y));
+                    }
+                    tv.setActivated(isSelected || values.contains(value));
+                }else{
+                    tv.setSelected(false);
+                    tv.setActivated(false);
+                }
+            }
+        }
+
+        Log.i("initViews","finish");
+    }
+    void initViewsOld(){
+        Log.i("initViews","start");
+        int rectNumSelected=0;
+
+        // בודק אם השחקן שלי תפס משבצת
+        if(myPlayer.selectedCell != null){
+            // שומר את המיקום של המשבצת
+            rectNumSelected=getRectNumber(myPlayer.selectedCell.position.x, myPlayer.selectedCell.position.y);
+        }
+
+        //עובר בלולאה על כל הפקדים כדי להגדיר את הנתונים שלהם
+        for (int y = 0; y < 9; y++) {
+            for (int x = 0; x < 9; x++) {
+                FontFitTextView tv = views[x][y];
+                boolean isSelected = myPlayer.selectedCell != null && myPlayer.selectedCell.position.equals(x, y);
+
+                //
+                // setBackground
+                //
+                // בודק אם מדובר במשבצת ריקה שנבחרה על ידי השחקן שלי
+                if (game.getBoardValue(x, y) == 0 && isSelected) {
+                    tv.setBackgroundResource(R.drawable.sudoku_background_focus);
+                    // בודק אם מדובר במשבצת שנבחרה על ידי השחקן השני
+                } else if (otherPlayer.selectedCell != null && otherPlayer.selectedCell.position.equals(x, y)) {
+                    tv.setBackgroundResource(R.drawable.sudoku_background_other_player);
+                } else {
+                    tv.setBackgroundResource(R.drawable.sudoku_background);
+                }
+
+                //
+                // setText
+                //
+                ArrayList<Integer> values = myPlayer.suggestionBoard.asValues(x, y);
+
+
+                if (myPlayer.board.get(x, y) > 0) {
+                    tv.setText(myPlayer.board.get(x, y) + "");
+                    tv.setTextColor(myPlayerColor);
+                } else if (otherPlayer.board.get(x, y) > 0) {
+                    tv.setText(otherPlayer.board.get(x, y) + "");
+                    tv.setTextColor(otherPlayerColor);
+                } else if (dataSource.baseValues.get(x, y) > 0) {
+                    tv.setText(dataSource.baseValues.get(x, y) + "");
+                    tv.setTextColor(baseColor);
+                } else {
+                    tv.setText(Html.fromHtml(getSuggestionHtmlText(values),HtmlCompat.FROM_HTML_MODE_LEGACY));
+                }
+
+                //
+                // set state
+                //
+                if (myPlayer.selectedCell != null) {
+                    int rectNum = getRectNumber(x, y);
+                    boolean isSameRect = rectNum == rectNumSelected;
+                    boolean isSameRow=myPlayer.selectedCell.position.y==y;
+                    boolean isSameLine=myPlayer.selectedCell.position.x==x;
+                    tv.setSelected(isSameRow || isSameLine || isSameRect);
                     int value = game.getBoardValue(x, y);
                     tv.setActivated(values.contains(value));
                 }else{
@@ -255,6 +371,8 @@ ActivitySudokuBinding binding;
                 }
             }
         }
+
+        Log.i("initViews","finish");
     }
 
     private FontFitTextView getNewTextView(Position position) {
@@ -278,8 +396,14 @@ ActivitySudokuBinding binding;
             if (myPlayer.selectedCell.position.equals(position)) {
                 ArrayList<Integer> values = myPlayer.suggestionBoard. asValues(position);
                 if (values.size() == 1) {
-                    myPlayer.addAction(position, values.get(0),7);
+                    int value=values.get(0);
+                    if(dataSource.values.get(position)==value) {
+                        myPlayer.addAction(position, value);
+                    }else{
+                        myPlayer.addBadAction(position, value);
+                    }
                     initViews();
+                    initButtons();
                 }
                 return;
             }

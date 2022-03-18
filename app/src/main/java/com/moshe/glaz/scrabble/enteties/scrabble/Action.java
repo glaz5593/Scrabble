@@ -1,7 +1,5 @@
 package com.moshe.glaz.scrabble.enteties.scrabble;
 
-import com.moshe.glaz.scrabble.enteties.Cell;
-
 import java.util.ArrayList;
 import java.util.Date;
 

@@ -1,24 +1,37 @@
 package com.moshe.glaz.scrabble.enteties.sudoku;
 
 import com.moshe.glaz.scrabble.enteties.Position;
+import com.moshe.glaz.scrabble.enteties.sudoku.values.IntValue;
 
-public class Board {
-    public Board(){
-        values=new int[9][9];
-    }
-    private int[][] values;
+import java.io.Serializable;
+import java.util.ArrayList;
 
-    public int get(int x,int y){
-        return values[x][y];
-    }
-    public int get(Position position){
-        return values[position.x][position.y];
-    }
-    public void set(Position position,int value){
-        values[position.x][position.y]=value;
-    }
-    public void set(int x,int y,int value){
-         values[x][y]=value;
+public class Board implements Serializable {
+    public Board() {
+        values = new ArrayList<>();
+        for (int y = 0; y < 9; y++) {
+            for (int x = 0; x < 9; x++) {
+                values.add(new IntValue());
+            }
+        }
     }
 
-   }
+    public ArrayList<IntValue> values;
+
+    public int get(int x, int y) {
+        return values.get((y * 9) + x).value;
+    }
+
+    public int get(Position position) {
+        return get(position.x,position.y);
+    }
+
+    public void set(Position position, int value) {
+        set(position.x,position.y,value);
+    }
+
+    public void set(int x, int y, int value) {
+        values.get((y * 9) + x).value = value;
+    }
+
+}

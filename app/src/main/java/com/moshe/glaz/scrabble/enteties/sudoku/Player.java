@@ -40,15 +40,27 @@ public class Player {
     }
 
 
-    public void addAction(Position position, int value,int score) {
+    public void addAction(Position position, int value) {
         Action action=new Action();
         action.value = value;
         action.position = position;
-        action.score=score;
+        action.score=7;
 
         suggestionBoard.clear(position);
 
+        actions.add(action);
         board.set(position, value);
+    }
+
+    public void addBadAction(Position position, int value) {
+        Action action=new Action();
+        action.value = value;
+        action.position = position;
+        action.score=-3;
+
+        suggestionBoard.clear(position);
+
+        badActions.add(action);
     }
 
 
