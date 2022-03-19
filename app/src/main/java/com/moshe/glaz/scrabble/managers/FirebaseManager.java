@@ -4,6 +4,7 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
@@ -327,6 +328,16 @@ public class FirebaseManager {
         DatabaseReference ref= gameReference.push();
         game.uid = ref.getKey();
         ref.setValue(game).addOnCompleteListener(task->{
+            if(task.isSuccessful()){
+                listener.onResult(ActionResult.toSuccess(game));
+            }else{
+                listener.onResult(getErrorResult(task));
+            }
+        });
+    }
+
+    public void updateGame(Game game,ActionListener listener){
+        gameReference.child(game.uid).setValue(game).addOnCompleteListener(task->{
             if(task.isSuccessful()){
                 listener.onResult(ActionResult.toSuccess(game));
             }else{
