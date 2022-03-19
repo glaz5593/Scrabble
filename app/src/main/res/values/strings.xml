@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">סקראבל</string>
+    <string name="app_name">סוDOקו</string>
     <string name="title_activity_login">התחברות למערכת</string>
     <string name="prompt_email">Email</string>
     <string name="prompt_password">Password</string>

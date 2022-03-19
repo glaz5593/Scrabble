@@ -238,10 +238,15 @@ boolean isMyPlayerUser1;
     void initViews(){
         Log.i("initViews","start");
          int rectNumSelected=0;
-
+        ArrayList<Integer> selectedValues=new ArrayList<>();
         // בודק אם השחקן שלי תפס משבצת
         if(myPlayer.selectedCell != null){
-            // שומר את המיקום של המשבצת
+            int boardValue=game.getBoardValue(myPlayer.selectedCell.position.x,myPlayer.selectedCell.position.y);
+            if (boardValue > 0){
+                selectedValues.add(boardValue);
+            }else {
+                selectedValues = myPlayer.suggestionBoard.asValues(myPlayer.selectedCell.position);
+            }
             rectNumSelected=getRectNumber(myPlayer.selectedCell.position.x, myPlayer.selectedCell.position.y);
         }
 
@@ -267,7 +272,6 @@ boolean isMyPlayerUser1;
                 //
                 // setText
                 //
-                ArrayList<Integer> values = myPlayer.suggestionBoard.asValues(x, y);
 
 
                 if (myPlayer.board.get(x, y) > 0) {
@@ -280,7 +284,8 @@ boolean isMyPlayerUser1;
                     tv.setText(dataSource.baseValues.get(x, y) + "");
                     tv.setTextColor(baseColor);
                 } else {
-                      tv.setText(Html.fromHtml(getSuggestionHtmlText(values),HtmlCompat.FROM_HTML_MODE_LEGACY));
+                    ArrayList<Integer> values = myPlayer.suggestionBoard.asValues(x, y);
+                    tv.setText(Html.fromHtml(getSuggestionHtmlText(values),HtmlCompat.FROM_HTML_MODE_LEGACY));
                  }
 
                 //
@@ -293,10 +298,7 @@ boolean isMyPlayerUser1;
                     boolean isSameLine=myPlayer.selectedCell.position.x==x;
                     tv.setSelected(isSameRow || isSameLine || isSameRect);
                     int value = game.getBoardValue(x, y);
-                    if(game.getBoardValue(x, y)>0){
-                        values.add(game.getBoardValue(x, y));
-                    }
-                    tv.setActivated(isSelected || values.contains(value));
+                    tv.setActivated(isSelected || selectedValues.contains(value));
                 }else{
                     tv.setSelected(false);
                     tv.setActivated(false);
@@ -392,6 +394,7 @@ boolean isMyPlayerUser1;
     }
 
     private void onCellClick(Position position) {
+        Log.i("pref3","1");
         if(myPlayer.selectedCell != null) {
             if (myPlayer.selectedCell.position.equals(position)) {
                 ArrayList<Integer> values = myPlayer.suggestionBoard. asValues(position);
@@ -413,8 +416,11 @@ boolean isMyPlayerUser1;
         myPlayer.selectedCell.position=position;
         myPlayer.selectedCell.time=new Date().getTime();
 
+        Log.i("pref3","7");
         initViews();
+        Log.i("pref3","8");
         initButtons();
+        Log.i("pref3","9");
     }
 
     private void initButtons() {

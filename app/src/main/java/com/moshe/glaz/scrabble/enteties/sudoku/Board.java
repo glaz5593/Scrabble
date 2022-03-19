@@ -7,10 +7,11 @@ import java.io.Serializable;
 import java.util.ArrayList;
 
 public class Board implements Serializable {
+    int size = 9;
     public Board() {
         values = new ArrayList<>();
-        for (int y = 0; y < 9; y++) {
-            for (int x = 0; x < 9; x++) {
+        for (int y = 0; y < size; y++) {
+            for (int x = 0; x < size; x++) {
                 values.add(new IntValue());
             }
         }
@@ -19,7 +20,7 @@ public class Board implements Serializable {
     public ArrayList<IntValue> values;
 
     public int get(int x, int y) {
-        return values.get((y * 9) + x).value;
+        return values.get((y * size) + x).value;
     }
 
     public int get(Position position) {
@@ -31,7 +32,7 @@ public class Board implements Serializable {
     }
 
     public void set(int x, int y, int value) {
-        values.get((y * 9) + x).value = value;
+        values.get((y * size) + x).value = value;
     }
 
 }
