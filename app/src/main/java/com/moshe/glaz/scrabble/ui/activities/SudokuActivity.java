@@ -1,6 +1,8 @@
 package com.moshe.glaz.scrabble.ui.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.constraintlayout.widget.ConstraintSet;
 import androidx.core.text.HtmlCompat;
 
 import android.graphics.Bitmap;
@@ -29,7 +31,7 @@ import com.moshe.glaz.scrabble.managers.DataSourceManager;
 import com.moshe.glaz.scrabble.managers.LogicManager;
 import com.moshe.glaz.scrabble.managers.SudokuManager;
 import com.moshe.glaz.scrabble.infrastructure.*;
-import com.moshe.glaz.scrabble.ui.views.FontFitTextView;
+import com.moshe.glaz.scrabble.ui.views.CellTextView;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -46,7 +48,7 @@ ActivitySudokuBinding binding;
     int baseColor;
 boolean isMyPlayerUser1;
 
-    FontFitTextView[][] views;
+    ArrayList<CellTextView> views;
     TextView[] buttons;
 
     DataSource dataSource;
@@ -96,9 +98,10 @@ boolean isMyPlayerUser1;
         }
 
         if(views==null){
-            createTextViewBoardLayout();
-        }
+            initBoardViews();
+         }
         initUsersUi();
+        initViews();
     }
 
     private void initUsersUi() {
@@ -167,43 +170,61 @@ boolean isMyPlayerUser1;
         return builder.toString();
     }
 
-    public void createTextViewBoardLayout() {
-        views = new FontFitTextView[9][9];
-
-        for (int y = 0; y < 9; y++) {
-            LinearLayout layout = getNewLayout();
-            for (int x = 0; x < 9; x++) {
-                Position o = new Position(x, y);
-                FontFitTextView tv = getNewTextView(o);
-
-                if (dataSource.baseValues.get(o) > 0) {
-                    tv.setText(dataSource.baseValues.get(o) +"");
-                    tv.setTextColor(UIUtils.getColor(R.color.sudoku_text_color_base_value));
-                }
-
-                layout.addView(tv);
-                views[x][y] = tv;
-
-                if (x == 2 || x == 5) {
-                    layout.addView(getEmptyViewCell());
-                }
-            }
-
-            binding.llBoard.addView(layout);
-
-            if(y == 2 || y == 5){
-                binding.llBoard.addView(getEmptyViewLine());
-            }
+    private void initBoardViews() {
+        int size = 9;
+        views = new ArrayList<>();
+        for (int i = 0; i < 81; i++) {
+            CellTextView view = new CellTextView(this);
+            view.setLayoutParams(new ConstraintLayout.LayoutParams(0, 0));
+            view.setId(View.generateViewId());
+            view.setTag(new Position(i % size, i / size));
+            view.setGravity(Gravity.CENTER);
+            view.setBackgroundResource(R.drawable.sudoku_background);
+            view.setFocusable(true);
+            view.setSelected(false);
+            view.setActivated(false);
+            view.setText(i + "");
+            view.setOnClickListener(v -> {
+                onCellClick((Position) v.getTag());
+                v.setActivated(true);
+            });
+            binding.clBoard.addView(view, 0);
+            views.add(view);
         }
 
-        binding.llBoard.post(() -> {
-            while (binding.llBoard.getWidth()==0){
-                Utils.sleep(200);
+        for (int i = 0; i < size * size; i++) {
+            Log.i("init2", "" + i);
+            CellTextView view = views.get(i);
+            ConstraintSet set = new ConstraintSet();
+            set.clone(binding.clBoard);
+
+            int marginTop= (i / size ==3 || i / size==6) ? 2 : 1;
+            int marginBottom=(i / size ==2 || i / size==5) ? 2 : 1;
+            int marginStart=(i % size ==3 || i % size==6) ? 2 : 1;
+            int marginEnd=(i % size ==2 || i % size==5) ? 2 : 1;
+
+            if (i < size) {
+                set.connect(view.getId(), ConstraintSet.TOP, binding.clBoard.getId(), ConstraintSet.TOP, marginTop);
+            } else {
+                set.connect(view.getId(), ConstraintSet.TOP, views.get(i - size).getId(), ConstraintSet.BOTTOM, marginTop);
             }
-            int width=binding.llBoard.getWidth();
-            LinearLayout.LayoutParams viewParam = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, width,1.0f);
-            binding.llBoard.setLayoutParams(viewParam);
-        });
+            if (i >= (size * size) - size) {
+                set.connect(view.getId(), ConstraintSet.BOTTOM, binding.clBoard.getId(), ConstraintSet.BOTTOM, marginBottom);
+            } else {
+                set.connect(view.getId(), ConstraintSet.BOTTOM, views.get(i + size).getId(), ConstraintSet.TOP, marginBottom);
+            }
+            if (i % size == 0) {
+                set.connect(view.getId(), ConstraintSet.START, binding.clBoard.getId(), ConstraintSet.START, marginStart);
+            } else {
+                set.connect(view.getId(), ConstraintSet.START, views.get(i - 1).getId(), ConstraintSet.END, marginStart);
+            }
+            if ((i + 1) % size == 0) {
+                set.connect(view.getId(), ConstraintSet.END, binding.clBoard.getId(), ConstraintSet.END, marginEnd);
+            } else {
+                set.connect(view.getId(), ConstraintSet.END, views.get(i + 1).getId(), ConstraintSet.START, marginEnd);
+            }
+            set.applyTo(binding.clBoard);
+        }
     }
 
     private String getSuggestionHtmlText(ArrayList<Integer> values) {
@@ -253,21 +274,21 @@ boolean isMyPlayerUser1;
         //עובר בלולאה על כל הפקדים כדי להגדיר את הנתונים שלהם
         for (int y = 0; y < 9; y++) {
             for (int x = 0; x < 9; x++) {
-                FontFitTextView tv = views[x][y];
+                CellTextView tv = views.get((y * 9) + x);
                 boolean isSelected = myPlayer.selectedCell != null && myPlayer.selectedCell.position.equals(x, y);
 
                 //
                 // setBackground
                 //
                 // בודק אם מדובר במשבצת ריקה שנבחרה על ידי השחקן שלי
-                if (game.getBoardValue(x, y) == 0 && isSelected) {
-                    tv.setBackgroundResource(R.drawable.sudoku_background_focus);
-                    // בודק אם מדובר במשבצת שנבחרה על ידי השחקן השני
-                } else if (otherPlayer.selectedCell != null && otherPlayer.selectedCell.position.equals(x, y)) {
-                    tv.setBackgroundResource(R.drawable.sudoku_background_other_player);
-                } else {
-                    tv.setBackgroundResource(R.drawable.sudoku_background);
-                }
+                //if (game.getBoardValue(x, y) == 0 && isSelected) {
+                //    tv.setBackgroundResource(R.drawable.sudoku_background_focus);
+                //    // בודק אם מדובר במשבצת שנבחרה על ידי השחקן השני
+                //} else if (otherPlayer.selectedCell != null && otherPlayer.selectedCell.position.equals(x, y)) {
+                //    tv.setBackgroundResource(R.drawable.sudoku_background_other_player);
+                //} else {
+                //    tv.setBackgroundResource(R.drawable.sudoku_background);
+                //}
 
                 //
                 // setText
@@ -276,13 +297,13 @@ boolean isMyPlayerUser1;
 
                 if (myPlayer.board.get(x, y) > 0) {
                     tv.setText(myPlayer.board.get(x, y) + "");
-                    tv.setTextColor(myPlayerColor);
+                    //tv.setTextColor(myPlayerColor);
                 } else if (otherPlayer.board.get(x, y) > 0) {
                     tv.setText(otherPlayer.board.get(x, y) + "");
-                    tv.setTextColor(otherPlayerColor);
+                    //tv.setTextColor(otherPlayerColor);
                 } else if (dataSource.baseValues.get(x, y) > 0) {
                     tv.setText(dataSource.baseValues.get(x, y) + "");
-                    tv.setTextColor(baseColor);
+                    //tv.setTextColor(baseColor);
                 } else {
                     ArrayList<Integer> values = myPlayer.suggestionBoard.asValues(x, y);
                     tv.setText(Html.fromHtml(getSuggestionHtmlText(values),HtmlCompat.FROM_HTML_MODE_LEGACY));
@@ -321,7 +342,7 @@ boolean isMyPlayerUser1;
         //עובר בלולאה על כל הפקדים כדי להגדיר את הנתונים שלהם
         for (int y = 0; y < 9; y++) {
             for (int x = 0; x < 9; x++) {
-                FontFitTextView tv = views[x][y];
+                CellTextView tv = views.get((y * 9) + x);
                 boolean isSelected = myPlayer.selectedCell != null && myPlayer.selectedCell.position.equals(x, y);
 
                 //
@@ -377,9 +398,9 @@ boolean isMyPlayerUser1;
         Log.i("initViews","finish");
     }
 
-    private FontFitTextView getNewTextView(Position position) {
+    private CellTextView getNewTextView(Position position) {
         LinearLayout.LayoutParams viewParam = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT,1.0f);
-        FontFitTextView tv = new FontFitTextView(getApplicationContext());
+        CellTextView tv = new CellTextView(getApplicationContext());
         tv.setTag(position);
         tv.setGravity(Gravity.CENTER);
         tv.setBackgroundResource(R.drawable.sudoku_background);
@@ -388,6 +409,7 @@ boolean isMyPlayerUser1;
         tv.setSelected(false);
         tv.setActivated(false);
         tv.setOnClickListener(v->{
+            v.setActivated(true);
             onCellClick((Position)v.getTag());
         });
         return tv;
@@ -418,6 +440,7 @@ boolean isMyPlayerUser1;
 
         Log.i("pref3","7");
         initViews();
+
         Log.i("pref3","8");
         initButtons();
         Log.i("pref3","9");
