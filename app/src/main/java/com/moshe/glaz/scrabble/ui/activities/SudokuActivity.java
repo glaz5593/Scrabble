@@ -27,6 +27,8 @@ import com.moshe.glaz.scrabble.enteties.sudoku.DataSource;
 import com.moshe.glaz.scrabble.enteties.sudoku.Game;
 import com.moshe.glaz.scrabble.enteties.sudoku.Player;
 import com.moshe.glaz.scrabble.enteties.sudoku.SelectedCell;
+import com.moshe.glaz.scrabble.enteties.sudoku.values.BooleanVal;
+import com.moshe.glaz.scrabble.enteties.sudoku.values.IntBoolValue;
 import com.moshe.glaz.scrabble.managers.DataSourceManager;
 import com.moshe.glaz.scrabble.managers.LogicManager;
 import com.moshe.glaz.scrabble.managers.SudokuManager;
@@ -101,7 +103,7 @@ boolean isMyPlayerUser1;
             initBoardViews();
          }
         initUsersUi();
-        initViews();
+        initViews(true);
     }
 
     private void initUsersUi() {
@@ -227,7 +229,8 @@ boolean isMyPlayerUser1;
         }
     }
 
-    private String getSuggestionHtmlText(ArrayList<Integer> values) {
+    private String getSuggestionHtmlText(int x,int y) {
+        ArrayList<Integer> values= myPlayer.suggestionBoard.asValues(x,y);
         if (values.size()==0){
             return ("");
         }
@@ -256,9 +259,9 @@ boolean isMyPlayerUser1;
         return  builder.toString();
     }
 
-    void initViews(){
+    void initViews(boolean setText){
         Log.i("initViews","start");
-         int rectNumSelected=0;
+        int rectNumSelected=0;
         ArrayList<Integer> selectedValues=new ArrayList<>();
         // בודק אם השחקן שלי תפס משבצת
         if(myPlayer.selectedCell != null){
@@ -277,143 +280,61 @@ boolean isMyPlayerUser1;
                 CellTextView tv = views.get((y * 9) + x);
                 boolean isSelected = myPlayer.selectedCell != null && myPlayer.selectedCell.position.equals(x, y);
 
-                //
-                // setBackground
-                //
-                // בודק אם מדובר במשבצת ריקה שנבחרה על ידי השחקן שלי
-                //if (game.getBoardValue(x, y) == 0 && isSelected) {
-                //    tv.setBackgroundResource(R.drawable.sudoku_background_focus);
-                //    // בודק אם מדובר במשבצת שנבחרה על ידי השחקן השני
-                //} else if (otherPlayer.selectedCell != null && otherPlayer.selectedCell.position.equals(x, y)) {
-                //    tv.setBackgroundResource(R.drawable.sudoku_background_other_player);
-                //} else {
-                //    tv.setBackgroundResource(R.drawable.sudoku_background);
-                //}
-
-                //
-                // setText
-                //
-
-
-                if (myPlayer.board.get(x, y) > 0) {
-                    tv.setText(myPlayer.board.get(x, y) + "");
-                    //tv.setTextColor(myPlayerColor);
-                } else if (otherPlayer.board.get(x, y) > 0) {
-                    tv.setText(otherPlayer.board.get(x, y) + "");
-                    //tv.setTextColor(otherPlayerColor);
-                } else if (dataSource.baseValues.get(x, y) > 0) {
-                    tv.setText(dataSource.baseValues.get(x, y) + "");
-                    //tv.setTextColor(baseColor);
-                } else {
-                    ArrayList<Integer> values = myPlayer.suggestionBoard.asValues(x, y);
-                    tv.setText(Html.fromHtml(getSuggestionHtmlText(values),HtmlCompat.FROM_HTML_MODE_LEGACY));
-                 }
+                //if (otherPlayer.selectedCell != null && otherPlayer.selectedCell.position.equals(x, y)) {
+                //         tv.setBackgroundResource(R.drawable.sudoku_background_other_player);
+                //     }
 
                 //
                 // set state
                 //
+                ArrayList<Integer> badValues=new ArrayList<>();
                 if (myPlayer.selectedCell != null) {
                     int rectNum = getRectNumber(x, y);
+                    int value = game.getBoardValue(x, y);
+
                     boolean isSameRect = rectNum == rectNumSelected;
                     boolean isSameRow=myPlayer.selectedCell.position.y==y;
                     boolean isSameLine=myPlayer.selectedCell.position.x==x;
+                    boolean isContains=selectedValues.contains(value);
+
                     tv.setSelected(isSameRow || isSameLine || isSameRect);
-                    int value = game.getBoardValue(x, y);
-                    tv.setActivated(isSelected || selectedValues.contains(value));
+                    tv.setActivated(isSelected || isContains);
+                    tv.setChecked(isSelected && game.getBoardValue(x, y) == 0);
+                    if(setText && !isSelected && (isSameRow || isSameLine || isSameRect) && isContains){
+                        badValues.add(value);
+                    }
                 }else{
+                    tv.setChecked(false);
                     tv.setSelected(false);
                     tv.setActivated(false);
-                }
-            }
-        }
-
-        Log.i("initViews","finish");
-    }
-    void initViewsOld(){
-        Log.i("initViews","start");
-        int rectNumSelected=0;
-
-        // בודק אם השחקן שלי תפס משבצת
-        if(myPlayer.selectedCell != null){
-            // שומר את המיקום של המשבצת
-            rectNumSelected=getRectNumber(myPlayer.selectedCell.position.x, myPlayer.selectedCell.position.y);
-        }
-
-        //עובר בלולאה על כל הפקדים כדי להגדיר את הנתונים שלהם
-        for (int y = 0; y < 9; y++) {
-            for (int x = 0; x < 9; x++) {
-                CellTextView tv = views.get((y * 9) + x);
-                boolean isSelected = myPlayer.selectedCell != null && myPlayer.selectedCell.position.equals(x, y);
-
-                //
-                // setBackground
-                //
-                // בודק אם מדובר במשבצת ריקה שנבחרה על ידי השחקן שלי
-                if (game.getBoardValue(x, y) == 0 && isSelected) {
-                    tv.setBackgroundResource(R.drawable.sudoku_background_focus);
-                    // בודק אם מדובר במשבצת שנבחרה על ידי השחקן השני
-                } else if (otherPlayer.selectedCell != null && otherPlayer.selectedCell.position.equals(x, y)) {
-                    tv.setBackgroundResource(R.drawable.sudoku_background_other_player);
-                } else {
-                    tv.setBackgroundResource(R.drawable.sudoku_background);
                 }
 
                 //
                 // setText
                 //
-                ArrayList<Integer> values = myPlayer.suggestionBoard.asValues(x, y);
-
-
-                if (myPlayer.board.get(x, y) > 0) {
-                    tv.setText(myPlayer.board.get(x, y) + "");
-                    tv.setTextColor(myPlayerColor);
-                } else if (otherPlayer.board.get(x, y) > 0) {
-                    tv.setText(otherPlayer.board.get(x, y) + "");
-                    tv.setTextColor(otherPlayerColor);
-                } else if (dataSource.baseValues.get(x, y) > 0) {
-                    tv.setText(dataSource.baseValues.get(x, y) + "");
-                    tv.setTextColor(baseColor);
-                } else {
-                    tv.setText(Html.fromHtml(getSuggestionHtmlText(values),HtmlCompat.FROM_HTML_MODE_LEGACY));
-                }
-
-                //
-                // set state
-                //
-                if (myPlayer.selectedCell != null) {
-                    int rectNum = getRectNumber(x, y);
-                    boolean isSameRect = rectNum == rectNumSelected;
-                    boolean isSameRow=myPlayer.selectedCell.position.y==y;
-                    boolean isSameLine=myPlayer.selectedCell.position.x==x;
-                    tv.setSelected(isSameRow || isSameLine || isSameRect);
-                    int value = game.getBoardValue(x, y);
-                    tv.setActivated(values.contains(value));
-                }else{
-                    tv.setSelected(false);
-                    tv.setActivated(false);
-                }
+                initViewText(x,y);
             }
         }
 
         Log.i("initViews","finish");
     }
+    void initViewText(int x,int y) {
+        CellTextView tv = views.get((y * 9) + x);
 
-    private CellTextView getNewTextView(Position position) {
-        LinearLayout.LayoutParams viewParam = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT,1.0f);
-        CellTextView tv = new CellTextView(getApplicationContext());
-        tv.setTag(position);
-        tv.setGravity(Gravity.CENTER);
-        tv.setBackgroundResource(R.drawable.sudoku_background);
-        tv.setLayoutParams(viewParam);
-        tv.setFocusable(true);
-        tv.setSelected(false);
-        tv.setActivated(false);
-        tv.setOnClickListener(v->{
-            v.setActivated(true);
-            onCellClick((Position)v.getTag());
-        });
-        return tv;
+        //
+        // setText
+        //
+        if (myPlayer.board.get(x, y) > 0) {
+            tv.setText(myPlayer.board.get(x, y) + "");
+        } else if (otherPlayer.board.get(x, y) > 0) {
+            tv.setText(otherPlayer.board.get(x, y) + "");
+        } else if (dataSource.baseValues.get(x, y) > 0) {
+            tv.setText(dataSource.baseValues.get(x, y) + "");
+        } else {
+            tv.setText(Html.fromHtml(getSuggestionHtmlText(x,y), HtmlCompat.FROM_HTML_MODE_LEGACY));
+        }
     }
+
 
     private void onCellClick(Position position) {
         Log.i("pref3","1");
@@ -427,7 +348,8 @@ boolean isMyPlayerUser1;
                     }else{
                         myPlayer.addBadAction(position, value);
                     }
-                    initViews();
+                    initViews(false);
+                    initViewText(position.x ,position.y);
                     initButtons();
                 }
                 return;
@@ -439,7 +361,8 @@ boolean isMyPlayerUser1;
         myPlayer.selectedCell.time=new Date().getTime();
 
         Log.i("pref3","7");
-        initViews();
+        initViews(false);
+        initViewText(position.x ,position.y);
 
         Log.i("pref3","8");
         initButtons();
@@ -460,6 +383,7 @@ boolean isMyPlayerUser1;
         }
     }
 
+    boolean lllllll=true;
     private void onNumberButtonClick(View view) {
         int value = (Integer) view.getTag();
         if (myPlayer.selectedCell == null) {
@@ -469,10 +393,12 @@ boolean isMyPlayerUser1;
             myPlayer.suggestionBoard.remove(myPlayer.selectedCell.position, value);
             view.setSelected(false);
         } else {
+            lllllll=!lllllll;
             myPlayer.suggestionBoard.add(myPlayer.selectedCell.position, value);
             view.setSelected(true);
         }
-        initViews();
+        initViews(false);
+        initViewText(myPlayer.selectedCell.position.x ,myPlayer.selectedCell.position.y);
     }
 
     private int getRectNumber(int x, int y) {
@@ -482,29 +408,5 @@ boolean isMyPlayerUser1;
         int yy=y/3;
         yy++;
         return  xx+yy;
-    }
-
-    private LinearLayout getNewLayout() {
-        LinearLayout layout = new LinearLayout(getApplicationContext());
-        LinearLayout.LayoutParams p = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT,1.0f);
-        layout.setLayoutParams(p);
-        layout.setOrientation(LinearLayout.HORIZONTAL);
-        return layout;
-    }
-
-    private View getEmptyViewCell() {
-        View view = new View(getApplicationContext());
-        LinearLayout.LayoutParams p = new LinearLayout.LayoutParams(4, ViewGroup.LayoutParams.MATCH_PARENT);
-        view.setLayoutParams(p);
-        view.setBackgroundColor(UIUtils.getColor(R.color.gray_dark));
-        return view;
-    }
-
-    private View getEmptyViewLine() {
-        View view = new View(getApplicationContext());
-        LinearLayout.LayoutParams p = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 4);
-        view.setLayoutParams(p);
-        view.setBackgroundColor(UIUtils.getColor(R.color.gray_dark));
-        return view;
     }
 }

@@ -137,6 +137,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/cl_board"
         android:layout_width="0dp"
+        android:layout_margin="6dp"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintBottom_toTopOf="@id/cl_panel"
         app:layout_constraintTop_toBottomOf="@id/cl_dasboard"

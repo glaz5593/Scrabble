@@ -2,7 +2,6 @@ package com.moshe.glaz.scrabble.enteties.sudoku;
 
 import com.moshe.glaz.scrabble.enteties.Position;
 import com.moshe.glaz.scrabble.enteties.sudoku.values.BooleanVal;
-import com.moshe.glaz.scrabble.enteties.sudoku.values.IntValues;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -19,6 +18,20 @@ public class SuggestionBoard implements Serializable {
 
     public ArrayList<IntValues> values;
 
+    public class IntValues {
+        public ArrayList<BooleanVal> values;
+        public IntValues() {
+            clear();
+        }
+
+        void clear(){
+            values = new ArrayList<>();
+            for (int i = 0; i <= 9; i++) {
+                values.add(new BooleanVal());
+            }
+        }
+    }
+ 
     public boolean has(int x, int y, int value) {
         return values.get((y * 9) + x).values.get(value).value;
     }
